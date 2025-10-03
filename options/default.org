@@ -1,0 +1,41 @@
+#+AUTHOR: Hirotaka Niitsuma
+#+EMAIL: hirotakaniitsuma@omu.ac.jp
+#+OPTIONS: H:4 num:nil
+#+OPTIONS: toc:2
+#+OPTIONS: ^:nil @:nil \n:nil ::t |:t f:nil TeX:nil
+#+OPTIONS: skip:t
+#+OPTIONS: author:t
+#+OPTIONS: email:t
+#+OPTIONS: creator:t
+#+OPTIONS: timestamp:nil
+#+OPTIONS: d:nil
+#+OPTIONS: tags:t
+#+TEXT:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE: ja
+#+LINK_UP:
+#+LINK_HOME:
+#+LATEX_HEADER:
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="pub/css/text.css" /><script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+#+PROPERTY: cache yes
+#+MACRO: YEAR 2015
+#+STARTUP: odd
+#+HTML_LINK_HOME: index.html
+#+HTML_LINK_UP: index.html
+
+#+BEGIN_HTML
+  <script type="text/javascript">
+  <!--/*--><![CDATA[/*><!--*/
+  $(function() {
+    $("pre[id^=ans-]").each(function() {
+      var code = $(this);
+      var link = $('<a href="javascript:void(0);">toggle code</a>');
+      code.hide();
+      link.insertBefore(code);
+      link.on('click', function(e){code.toggle();});
+    });
+  });
+  /*]]>*///-->
+  </script>
+#+END_HTML
