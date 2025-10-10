@@ -1,0 +1,488 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0034)http://10.133.2.200/ai/nltime.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja" style="--vsc-domain: &quot;10.133.2.200&quot;;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自然言語と時系列処理</title>
+<meta name="author" content="Hirotaka Niitsuma">
+<meta name="generator" content="Org Mode">
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="./自然言語と時系列処理_files/text.css"><script src="./自然言語と時系列処理_files/jquery-1.9.1.min.js.ダウンロード"></script>
+<style>.ssBtnDefault{position:absolute;z-index:100000000;background:none;border:none;outline:none;right:0;cursor:pointer;width:26px;height:26px;margin:0;padding:0;top:8px;right:8px;opacity:.6;pointer-events:all;transition-duration:.25s}.ssBtnDefault:hover{opacity:1 !important;transition-duration:.25s}.ssBtnDefault .fade{transition-duration:5s;opacity:0}.ssBtnYouTube{background:none;border:none;margin-right:20px !important;padding-top:0px !important;width:25px !important}.ytp-embed .ssBtnYouTube{width:20px !important;margin-right:15px !important}.ssBtnVimeo{height:2rem !important;width:2rem !important;margin-top:8px !important}.ssBtnVimeo button{width:100% !important;height:100% !important}.ssBtnVimeo button svg{width:19px}.ssBtnNetflix{background:none;border:none;cursor:pointer;width:4rem;margin:0 .5rem;display:inline-block;flex-shrink:0}.ssBtnNetflix>svg{transform:translateY(-0.5rem)}.ssBtnNetflix:hover{transform:scale(1.2);transition-duration:.25s}.ssBtnHulu{width:27px;margin-top:4px;margin-right:10px;opacity:.7;cursor:pointer}.ssBtnHulu:hover{opacity:1}.ssBtnAmazon{margin-left:1.5vw;outline:none;cursor:pointer;opacity:.8}.ssBtnAmazon:hover{opacity:1}@media(min-width: 1200px){.ssBtnAmazon{width:1.6666666667vw;height:1.6666666667vw}}@media(max-width: 1199px){.ssBtnAmazon{width:20px;height:20px}}.ssBtnMax{width:24px;height:24px;margin:4px;padding:12px;box-sizing:content-box;position:relative;opacity:.7;cursor:pointer;display:flex;justify-content:center;align-items:center}.ssBtnMax:hover{opacity:1;transform:scale(1.2)}.ssBtnMax svg{width:24px;height:24px}.ssBtnDisney{opacity:.7}.ssBtnDisney:hover{opacity:1}.ssBtnDisney svg{width:25px !important;height:31px !important;padding-top:4px;margin-right:7px}.ssBtnApple{cursor:pointer;opacity:.7}.ssBtnApple:hover{opacity:1}.ssBtnApple svg{width:22px !important;height:22px !important;margin-right:2px !important}body .vsNotification{display:flex;width:100%;height:4rem;justify-content:center;align-items:center;position:fixed;z-index:1000000000;top:-4rem;padding:.75rem 1.25em;border:1px solid rgba(0,0,0,0);border-radius:.25em;font-size:12px;height:fit-content;justify-self:center;width:auto;animation-name:notification;animation-iteration-count:1;animation-duration:2s}@keyframes notification{0%{top:-4rem}25%{top:3rem}85%{top:3rem}100%{top:-4rem}}body .vsNotification.persist{top:3rem;animation-name:notification-persist;animation-iteration-count:1;animation-duration:1s}@keyframes notification-persist{0%{top:-4rem}100%{top:3rem}}body .vsNotification.success{background-color:#d4edda;border-color:#c3e6cb;color:#155724}body .vsNotification.fail{background-color:#edd4d4;border-color:#e6c3c3;color:#b62424}body .vsNotification .vsNotificationClose{color:#b62424;border:none;background-color:rgba(0,0,0,0);padding:0;line-height:0;position:relative;left:.5rem;cursor:pointer}body .vsNotification .vsNContent{position:absolute;z-index:1000000000;margin-bottom:1em;padding:.75rem 1.25em;border:1px solid rgba(0,0,0,0);border-radius:.25em;font-size:12px;height:fit-content;top:0}body .vsNotification a{color:#b62424}.ssModal{display:none;position:fixed;z-index:100000000;right:20px;opacity:0;background-color:#fffefa;border-radius:3px;padding:25px;color:#525252;font-family:muli,sans-serif;box-shadow:0px 4px 8px 0px rgba(0,0,0,.15);animation-name:animateOn;animation-duration:.2s;animation-fill-mode:forwards}.ssModal.visible{display:block}.ssModal *{vertical-align:middle;line-height:normal;font-weight:normal}@keyframes animateOn{from{opacity:0;top:0px}to{opacity:1;top:20px}}.ssModal .close{position:absolute;right:10px;top:10px;cursor:pointer;opacity:.5;background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA0NDMuNCA0NDMuNCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDQzLjQgNDQzLjQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggZD0iTTYuOCw0MDMuNWwxODEuOC0xODEuOEw2LjgsMzkuOWMtNS45LTUuOS04LjItMTQuNS02LTIyLjZDMyw5LjIsOS4yLDMsMTcuMywwLjhjOC4xLTIuMiwxNi43LDAuMSwyMi42LDZsMTgxLjgsMTgxLjgKCUw0MDMuNSw2LjhjNS45LTUuOSwxNC41LTguMiwyMi42LTZjOC4xLDIuMiwxNC40LDguNCwxNi41LDE2LjVjMi4yLDguMS0wLjEsMTYuNy02LDIyLjZMMjU0LjcsMjIxLjdsMTgxLjgsMTgxLjgKCWM1LjksNS45LDguMiwxNC41LDYsMjIuNmMtMi4yLDguMS04LjQsMTQuNC0xNi41LDE2LjVjLTguMSwyLjItMTYuNy0wLjEtMjIuNi02TDIyMS43LDI1NC43TDM5LjksNDM2LjVjLTUuOSw1LjktMTQuNSw4LjItMjIuNiw2CglDOS4yLDQ0MC40LDMsNDM0LjEsMC44LDQyNkMtMS40LDQxOCwwLjksNDA5LjQsNi44LDQwMy41TDYuOCw0MDMuNXoiLz4KPC9zdmc+Cg==);width:10px;height:10px}.ssModal .ssButtons{margin-top:25px;text-align:right}.ssModal .ssButtons .ssButton,.ssModal .ssButtons a .ssButton{display:inline-block;height:20px;padding:3px 12px 3px;margin-left:14px;border-radius:4px;box-shadow:0px 4px 8px 0px rgba(0,0,0,.15);background-color:#fff;font-size:12px;color:#525252;line-height:20px;font-weight:normal;cursor:pointer;text-decoration:none}.ssModal .ssButtons .ssButton .emoji,.ssModal .ssButtons a .ssButton .emoji{font-size:15px;vertical-align:bottom}.ssModal .ssButtons .ssButton.blue,.ssModal .ssButtons a .ssButton.blue{background-color:#19acef;color:#fff}.ssModal .icon{background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI1LjIuMywgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIKCSBpZD0iTGF5ZXJfMSIgeG1sbnM6Y2M9Imh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL25zIyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIiB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCgkgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCAxMDAgODMuOSIKCSBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMDAgODMuOTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwMEFERUY7fQo8L3N0eWxlPgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC05NTIuMzYyMTgpIj4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0zNS42LDk1Mi40Yy0xLjMsMC0yLjQsMS0yLjksMS44bC01LjYsMTEuMUgxMWMtNiwwLTExLDUtMTEsMTF2NDljMCw2LDUsMTEsMTEsMTFoNzhjNiwwLDExLTUsMTEtMTF2LTQ5CgkJYzAtNi01LTExLTExLTExSDcyLjlsLTUuNi0xMS4xYy0wLjUtMS4xLTEuNi0xLjgtMi45LTEuOEwzNS42LDk1Mi40TDM1LjYsOTUyLjR6IE0zNy42LDk1OC44aDI1LjJsNS41LDExLjEKCQljMC41LDEuMSwxLjYsMS44LDIuOSwxLjhoMTguMWMyLjYsMCw0LjUsMS45LDQuNSw0LjV2NDljMCwyLjYtMS45LDQuNS00LjUsNC41SDExLjFjLTIuNiwwLTQuNS0xLjktNC41LTQuNXYtNDkKCQljMC0yLjYsMS45LTQuNSw0LjUtNC41aDE4LjFjMS4xLDAsMi40LTAuOCwyLjktMS44TDM3LjYsOTU4Ljh6IE01MC4yLDk3OS44Yy0xMS42LDAtMjEsOS40LTIxLDIxczkuNCwyMSwyMSwyMXMyMS05LjQsMjEtMjEKCQlTNjEuOCw5NzkuOCw1MC4yLDk3OS44eiBNNTAuMiw5ODYuMmM4LjEsMCwxNC41LDYuNSwxNC41LDE0LjVzLTYuNSwxNC41LTE0LjUsMTQuNXMtMTQuNS02LjUtMTQuNS0xNC41UzQyLjEsOTg2LjIsNTAuMiw5ODYuMnoiLz4KPC9nPgo8L3N2Zz4K);background-repeat:no-repeat;width:30px;height:30px;vertical-align:top;margin-right:22px;margin-top:2px;display:inline-block}.ssModal .body{display:inline-block;width:315px}.ssModal .body .title{font-size:15px;font-weight:600;margin-bottom:7px}.ssModal .body .description{font-size:13px;font-weight:lighter}body #ssTempHolder{position:fixed;z-index:1000000000000;width:100%;height:100%;top:0;pointer-events:none}body #ssTempHolder video{width:auto !important;height:auto !important;max-width:100% !important;max-height:100% !important;top:0 !important;left:0 !important;transform:none !important}body.ssTakeScreenshot .ssElement{z-index:100000000000 !important}body.ssTakeScreenshot.ssNetflix [data-uia=video-canvas]{z-index:10000000}body.ssTakeScreenshot.ssNetflix video{background-color:#000}body.ssTakeScreenshot.ssNetflix .player-timedtext{display:none !important}body.ssTakeScreenshot.ssNetflix.showSubs .player-timedtext{display:block !important}body.ssTakeScreenshot.ssAmazon .dv-player-fullscreen video{z-index:99999999 !important}body.ssTakeScreenshot.ssDisney .btm-media-overlays-container{display:none}body.ssTakeScreenshot.ssDisney .TimedTextOverlay{display:none}body.ssTakeScreenshot.ssDisney.showSubs .TimedTextOverlay{display:block}body.ssTakeScreenshot.ssHulu .ContentPlayer__contentArea{z-index:10000000000;position:relative}body.ssTakeScreenshot.ssHulu .ClosedCaption{display:none}body.ssTakeScreenshot.ssHulu.showSubs .ClosedCaption{display:block}body.ssTakeScreenshot.ssMax video{z-index:99999999;position:relative}body.ssTakeScreenshot.ssYoutube .html5-video-container,body.ssTakeScreenshot.ssYoutube .ytp-caption-window-container{z-index:999999999 !important}body.ssTakeScreenshot.ssApple #apple-music-video-player{z-index:999999999 !important}body.ssTakeScreenshot.ssApple .video-player-scrim{display:none}body .ssWrapper{overflow:hidden}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3Njc3MvU2NyZWVuc2hvdENvbnRyb2wvX2J1dHRvbnMuc2NzcyIsIndlYnBhY2s6Ly8uL3Njc3MvU2NyZWVuc2hvdENvbnRyb2wvX25vdGlmaWNhdGlvbnMuc2NzcyIsIndlYnBhY2s6Ly8uL3Njc3MvU2NyZWVuc2hvdENvbnRyb2wvX21vZGFsLnNjc3MiLCJ3ZWJwYWNrOi8vLi9zY3NzL1NjcmVlbnNob3RDb250cm9sLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsY0FFQyxpQkFBQSxDQUNBLGlCQUFBLENBQ0EsZUFBQSxDQUNBLFdBQUEsQ0FDQSxZQUFBLENBQ0EsT0FBQSxDQUNBLGNBQUEsQ0FFQSxVQUFBLENBQ0EsV0FBQSxDQUNBLFFBQUEsQ0FDQSxTQUFBLENBQ0EsT0FBQSxDQUNBLFNBQUEsQ0FFQSxVQUFBLENBQ0Esa0JBQUEsQ0FFRyx3QkFBQSxDQUVBLG9CQUNJLG9CQUFBLENBQ0Esd0JBQUEsQ0FHSixvQkFDSSxzQkFBQSxDQUNBLFNBQUEsQ0FRUixjQUVDLGVBQUEsQ0FDQSxXQUFBLENBRUEsNEJBQUEsQ0FDRywwQkFBQSxDQUNBLHFCQUFBLENBRUgseUJBQ0MscUJBQUEsQ0FDQSw0QkFBQSxDQUlGLFlBRUMsc0JBQUEsQ0FDRyxxQkFBQSxDQUVBLHlCQUFBLENBRUgsbUJBRUMscUJBQUEsQ0FDQSxzQkFBQSxDQUVBLHVCQUNDLFVBQUEsQ0FNSCxjQUNDLGVBQUEsQ0FDQSxXQUFBLENBQ0EsY0FBQSxDQUVBLFVBQUEsQ0FFQSxjQUFBLENBR0Esb0JBQUEsQ0FDQSxhQUFBLENBVUEsa0JBRUMsNkJBQUEsQ0FJRSxvQkFDSSxvQkFBQSxDQUNILHdCQUFBLENBSUwsV0FFQyxVQUFBLENBQ0EsY0FBQSxDQUNBLGlCQUFBLENBQ0EsVUFBQSxDQUNBLGNBQUEsQ0FFQSxpQkFDQyxTQUFBLENBSUYsYUFDQyxpQkFBQSxDQUVBLFlBQUEsQ0FFRyxjQUFBLENBQ0EsVUFBQSxDQUlBLG1CQUNJLFNBQUEsQ0FJUiww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bUJBQUEsQ0NySFgsbUJBQ0MsY0FBQSxDQUNBLHFCQUFBLENBQ0EsVUFBQSxDQUNBLFdBQUEsQ0FDQSxLQUFBLENBQ0EsbUJBQUEsQ0FFQSx5QkFDQyxxQkFBQSxDQUNBLHNCQUFBLENBQ0EseUJBQUEsQ0FDQSwwQkFBQSxDQUNBLGdCQUFBLENBQ0EsaUJBQUEsQ0FDQSx5QkFBQSxDQU1ELGlDQUNDLCtCQUFBLENBS0Esd0RBQ0MsZ0JBQUEsQ0FHRCxzQ0FDQyxxQkFBQSxDQUlELGtEQUVDLHVCQUFBLENBS0EsMkRBRUMsd0JBQUEsQ0FRRiwyREFDQywyQkFBQSxDQU1ELDZEQUNDLFlBQUEsQ0FHRCxpREFDQyxZQUFBLENBS0EsMERBQ0MsYUFBQSxDQU1GLHlEQUNDLG1CQUFBLENBQ0csaUJBQUEsQ0FHSiw0Q0FDQyxZQUFBLENBSUEscURBQ0MsYUFBQSxDQU9GLGtDQUNDLGdCQUFBLENBQ0EsaUJBQUEsQ0FjRCxxSEFDQyw0QkFBQSxDQUtELHdEQUNDLDRCQUFBLENBR0Qsa0RBQ0MsWUFBQSxDQUtILGdCQUNDLGVBQUEiLCJzb3VyY2VzQ29udGVudCI6WyIuc3NCdG5EZWZhdWx0IHtcblx0XG5cdHBvc2l0aW9uOiBhYnNvbHV0ZTtcblx0ei1pbmRleDogMTAwMDAwMDAwO1xuXHRiYWNrZ3JvdW5kOm5vbmU7XG5cdGJvcmRlcjogbm9uZTtcblx0b3V0bGluZTogbm9uZTtcblx0cmlnaHQ6MDtcblx0Y3Vyc29yOiBwb2ludGVyO1xuXHRcblx0d2lkdGg6IDI2cHg7XG5cdGhlaWdodDogMjZweDtcblx0bWFyZ2luOiAwOy8vNSUgOHB4IDA7XG5cdHBhZGRpbmc6MDtcblx0dG9wOjhweDtcblx0cmlnaHQ6OHB4O1xuXHRcblx0b3BhY2l0eTogLjY7XG5cdHBvaW50ZXItZXZlbnRzOiBhbGw7XG5cdC8qdHJhbnNpdGlvbi1maWxsLW1vZGU6IGZvcndhcmRzOyovXG4gICAgdHJhbnNpdGlvbi1kdXJhdGlvbjogLjI1cztcblxuICAgICY6aG92ZXIge1xuICAgICAgICBvcGFjaXR5OiAxICFpbXBvcnRhbnQ7IFxuICAgICAgICB0cmFuc2l0aW9uLWR1cmF0aW9uOiAuMjVzO1xuICAgIH1cblxuICAgIC5mYWRlIHtcbiAgICAgICAgdHJhbnNpdGlvbi1kdXJhdGlvbjogNXM7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgfVxuICAgIFxuICAgIC8qc3ZnIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjpyZWQ7XG4gICAgfSovXG59XG5cbi5zc0J0bllvdVR1YmUge1xuXG5cdGJhY2tncm91bmQ6bm9uZTtcblx0Ym9yZGVyOiBub25lO1xuXHRcblx0bWFyZ2luLXJpZ2h0OiAyMHB4ICFpbXBvcnRhbnQ7XG4gICAgcGFkZGluZy10b3A6IDBweCAhaW1wb3J0YW50O1xuICAgIHdpZHRoOiAyNXB4ICFpbXBvcnRhbnQ7XG5cblx0Lnl0cC1lbWJlZCAmIHtcblx0XHR3aWR0aDogMjBweCAhaW1wb3J0YW50O1xuXHRcdG1hcmdpbi1yaWdodDogMTVweCAhaW1wb3J0YW50O1xuXHR9XG59XG5cbi5zc0J0blZpbWVvIHtcblxuXHRoZWlnaHQ6IDJyZW0gIWltcG9ydGFudDtcbiAgICB3aWR0aDogMnJlbSAhaW1wb3J0YW50O1xuICAgIC8vcGFkZGluZzogNnB4ICFpbXBvcnRhbnQ7XG4gICAgbWFyZ2luLXRvcDogOHB4ICFpbXBvcnRhbnQ7XG5cblx0YnV0dG9uIHtcblxuXHRcdHdpZHRoOiAxMDAlICFpbXBvcnRhbnQ7XG5cdFx0aGVpZ2h0OiAxMDAlICFpbXBvcnRhbnQ7XG5cdFx0XG5cdFx0c3ZnIHtcblx0XHRcdHdpZHRoOiAxOXB4O1xuXHRcdH1cblx0fVxuXG59XG5cbi5zc0J0bk5ldGZsaXgge1xuXHRiYWNrZ3JvdW5kOm5vbmU7XG5cdGJvcmRlcjogbm9uZTtcblx0Y3Vyc29yOiBwb2ludGVyO1xuXG5cdHdpZHRoOjRyZW07XG5cdFxuXHRtYXJnaW46IDAgMC41cmVtO1xuXHQvL21hcmdpbjogMCAycmVtIDAgNHJlbTtcblxuXHRkaXNwbGF5OmlubGluZS1ibG9jaztcblx0ZmxleC1zaHJpbms6IDA7XG5cdFxuXHQvL21hcmdpbi10b3A6LTFyZW07XG5cdC8vaGVpZ2h0OjIuNHJlbTtcblx0Ly93aWR0aDogNTBweDtcblx0Ly9oZWlnaHQ6IDM1cHggIWltcG9ydGFudDtcblx0Ly93aWR0aDogMTAwJTsvLzMuNmVtICFpbXBvcnRhbnQ7XG4gICAgLy9oZWlnaHQ6IDEwMCU7Ly8xLjZlbSAhaW1wb3J0YW50O1xuXHQvL3BhZGRpbmc6MCAwIC42ZW0gMDtcblxuXHQmID4gc3ZnIHtcblx0XHQvL21hcmdpbi10b3A6LS4zcmVtO1xuXHRcdHRyYW5zZm9ybTp0cmFuc2xhdGVZKC0uNXJlbSk7XG5cdFx0Ly90cmFuc2Zvcm06IHNjYWxlKC41KTtcblx0fVxuICAgIFxuICAgICY6aG92ZXIge1xuICAgICAgICB0cmFuc2Zvcm06c2NhbGUoMS4yKTtcblx0ICAgIHRyYW5zaXRpb24tZHVyYXRpb246IC4yNXM7XG4gICAgfVxufVxuXG4uc3NCdG5IdWx1IHtcblx0XG5cdHdpZHRoOiAyN3B4O1xuXHRtYXJnaW4tdG9wOiA0cHg7XG5cdG1hcmdpbi1yaWdodDoxMHB4O1xuXHRvcGFjaXR5OiAuNztcblx0Y3Vyc29yOiBwb2ludGVyO1xuXHRcblx0Jjpob3ZlciB7XG5cdFx0b3BhY2l0eTogMTtcblx0fVxufVxuXG4uc3NCdG5BbWF6b24ge1xuXHRtYXJnaW4tbGVmdDogMS41dnc7XG4gICAgXG5cdG91dGxpbmU6IG5vbmU7XG5cdFxuICAgXHRjdXJzb3I6IHBvaW50ZXI7XG4gICBcdG9wYWNpdHk6IC44O1xuXG4gICBcdC8vei1pbmRleDogOTk5OTk5OTk5OTtcblxuICAgICY6aG92ZXIge1xuICAgICAgICBvcGFjaXR5OiAxO1xuICAgIH1cbn1cblxuQG1lZGlhIChtaW4td2lkdGg6IDEyMDBweCkgeyAuc3NCdG5BbWF6b24geyB3aWR0aDogMS42NjY2NjY2NjY2NjY2NjY1dnc7IGhlaWdodDogMS42NjY2NjY2NjY2NjY2NjY1dnc7IH0gfVxuQG1lZGlhIChtYXgtd2lkdGg6IDExOTlweCkgeyAuc3NCdG5BbWF6b24geyB3aWR0aDogMjBweDsgaGVpZ2h0OiAyMHB4OyB9IH1cblxuXG4uc3NCdG5NYXgge1xuXG4gICAgd2lkdGg6IDI0cHg7XG4gICAgaGVpZ2h0OiAyNHB4O1xuXHRtYXJnaW46IDRweDtcblx0cGFkZGluZzoxMnB4O1xuXHRib3gtc2l6aW5nOiBjb250ZW50LWJveDtcblxuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvcGFjaXR5OiAwLjc7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcblxuXHQmOmhvdmVyIHtcblx0XHRvcGFjaXR5OiAxO1xuXHRcdHRyYW5zZm9ybTogc2NhbGUoMS4yKTtcblx0fVxuXG5cdHN2ZyB7XG5cdFx0d2lkdGg6IDI0cHg7XG5cdFx0aGVpZ2h0OiAyNHB4O1xuXHR9XG59XG5cbi5zc0J0bkRpc25leSB7XG5cdC8vd2lkdGg6IDI2cHg7XG4gICAgLy9tYXJnaW4tcmlnaHQ6IDEzcHg7XG4gICAgb3BhY2l0eTogLjc7XG5cblx0Jjpob3ZlciB7XG5cdFx0b3BhY2l0eTogMTtcblx0fVxuXG5cdHN2ZyB7XG5cdFx0d2lkdGg6IDI1cHggIWltcG9ydGFudDtcblx0XHRoZWlnaHQ6IDMxcHggIWltcG9ydGFudDtcblx0XHRwYWRkaW5nLXRvcDogNHB4O1xuXHRcdG1hcmdpbi1yaWdodDogN3B4O1xuXHR9XG59XG5cbi5zc0J0bkFwcGxlIHtcblx0Ly93aWR0aDogMjZweDtcbiAgICAvL21hcmdpbi1yaWdodDogMTNweDtcblxuXHRjdXJzb3I6IHBvaW50ZXI7XG5cblxuICAgIG9wYWNpdHk6IC43O1xuXG5cdCY6aG92ZXIge1xuXHRcdG9wYWNpdHk6IDE7XG5cdH1cblxuXHRzdmcge1xuXHRcdHdpZHRoOiAyMnB4ICFpbXBvcnRhbnQ7XG5cdFx0aGVpZ2h0OiAyMnB4ICFpbXBvcnRhbnQ7XG5cdFx0bWFyZ2luLXJpZ2h0OiAycHggIWltcG9ydGFudDtcblx0fVxufSIsImJvZHkgLnZzTm90aWZpY2F0aW9uIHtcblxuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgaGVpZ2h0OiA0cmVtO1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHotaW5kZXg6IDEwMDAwMDAwMDA7XG4gICAgdG9wOi00cmVtO1xuXG4gICAgcGFkZGluZzogLjc1cmVtIDEuMjVlbTtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB0cmFuc3BhcmVudDtcbiAgICBib3JkZXItcmFkaXVzOiAuMjVlbTtcbiAgICBmb250LXNpemU6IDEycHg7XG4gICAgaGVpZ2h0OiBmaXQtY29udGVudDtcbiAgICBqdXN0aWZ5LXNlbGY6IGNlbnRlcjtcbiAgICB3aWR0aDogYXV0bztcblxuICAgIGFuaW1hdGlvbi1uYW1lOiBub3RpZmljYXRpb247XG4gICAgYW5pbWF0aW9uLWl0ZXJhdGlvbi1jb3VudDogMTtcbiAgICBhbmltYXRpb24tZHVyYXRpb246IDJzO1xuXG4gICAgQGtleWZyYW1lcyBub3RpZmljYXRpb24ge1xuICAgICAgICAwJSB7dG9wOiAtNHJlbTt9XG4gICAgICAgIDI1JSB7dG9wOiAzcmVtO31cbiAgICAgICAgODUlIHt0b3A6IDNyZW07fVxuICAgICAgICAxMDAlIHt0b3A6IC00cmVtO31cbiAgICB9XG5cbiAgICAmLnBlcnNpc3Qge1xuICAgICAgICAvL2Rvbid0IHJlc2V0IGFuaW1hdGlvbiBvciBnbyBiYWNrIHRvIGJlZ2lubmluZ1xuXG4gICAgICAgIHRvcDogM3JlbTtcblxuICAgICAgICBhbmltYXRpb24tbmFtZTogbm90aWZpY2F0aW9uLXBlcnNpc3Q7XG4gICAgICAgIGFuaW1hdGlvbi1pdGVyYXRpb24tY291bnQ6IDE7XG4gICAgICAgIGFuaW1hdGlvbi1kdXJhdGlvbjogMXM7XG5cbiAgICAgICAgQGtleWZyYW1lcyBub3RpZmljYXRpb24tcGVyc2lzdCB7XG4gICAgICAgICAgICAwJSB7dG9wOiAtNHJlbTt9XG4gICAgICAgICAgICAxMDAlIHt0b3A6IDNyZW07fVxuICAgICAgICB9XG4gICAgfVxuXG5cbiAgICAmLnN1Y2Nlc3Mge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZDRlZGRhO1xuICAgICAgICBib3JkZXItY29sb3I6ICNjM2U2Y2I7XG4gICAgICAgIGNvbG9yOiAjMTU1NzI0O1xuICAgIH1cblxuICAgICYuZmFpbCB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNlZGQ0ZDQ7XG4gICAgICAgIGJvcmRlci1jb2xvcjogI2U2YzNjMztcbiAgICAgICAgY29sb3I6ICNiNjI0MjQ7XG4gICAgfVxuXG4gICAgLnZzTm90aWZpY2F0aW9uQ2xvc2Uge1xuICAgICAgICBjb2xvcjogI2I2MjQyNDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDA7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgbGVmdDogLjVyZW07XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG5cbiAgICAudnNOQ29udGVudCB7XG4gICAgICAgIC8vY29udGVudDogJ1NjcmVlbnNob3QgY29waWVkIHRvIGNsaXBib2FyZCEnO1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHotaW5kZXg6IDEwMDAwMDAwMDA7XG4gICAgICAgIG1hcmdpbi1ib3R0b206IDFlbTtcbiAgICAgICAgcGFkZGluZzogLjc1cmVtIDEuMjVlbTtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdHJhbnNwYXJlbnQ7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IC4yNWVtO1xuICAgICAgICBmb250LXNpemU6IDEycHg7XG4gICAgICAgIGhlaWdodDogZml0LWNvbnRlbnQ7XG4gICAgICAgIHRvcDowO1xuICAgIH1cblxuICAgIGEge1xuICAgICAgICBjb2xvcjojYjYyNDI0O1xuICAgIH1cblxufSIsIi5zc01vZGFsIHtcblxuICAgIGRpc3BsYXk6IG5vbmU7XG5cbiAgICAmLnZpc2libGUge1xuICAgICAgICBkaXNwbGF5OmJsb2NrO1xuICAgIH1cblxuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB6LWluZGV4OiAxMDAwMDAwMDA7XG5cbiAgICByaWdodDoyMHB4O1xuICAgIFxuICAgIG9wYWNpdHk6IDA7XG5cbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiNmZmZlZmE7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuXG4gICAgcGFkZGluZzogMjVweDtcblxuICAgIGNvbG9yOiAjNTI1MjUyO1xuICAgIGZvbnQtZmFtaWx5OiBtdWxpLCBzYW5zLXNlcmlmO1xuXG4gICAgYm94LXNoYWRvdzogMHB4IDRweCA4cHggMHB4IHJnYmEoMCwgMCwgMCwgMC4xNSk7XG5cbiAgICBhbmltYXRpb24tbmFtZTogYW5pbWF0ZU9uO1xuICAgIGFuaW1hdGlvbi1kdXJhdGlvbjogLjJzO1xuICAgIGFuaW1hdGlvbi1maWxsLW1vZGU6IGZvcndhcmRzO1xuICAgIFxuICAgICoge1xuICAgICAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgICAgICBsaW5lLWhlaWdodDogbm9ybWFsO1xuICAgICAgICBmb250LXdlaWdodDogbm9ybWFsO1xuICAgIH1cblxuICAgIEBrZXlmcmFtZXMgYW5pbWF0ZU9uIHtcbiAgICAgICAgZnJvbSB7XG4gICAgICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICAgICAgdG9wOiAwcHg7XG4gICAgICAgIH1cbiAgICAgICAgdG8ge1xuICAgICAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgICAgIHRvcDogMjBweDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5jbG9zZSB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgcmlnaHQ6IDEwcHg7XG4gICAgICAgIHRvcDogMTBweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBvcGFjaXR5OiAuNTtcblxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoJy4uL2ltYWdlcy9jbG9zZS5zdmcnKTtcblxuICAgICAgICB3aWR0aDoxMHB4O1xuICAgICAgICBoZWlnaHQ6MTBweDtcblxuICAgIH1cblxuICAgIC5zc0J1dHRvbnMge1xuXG4gICAgICAgIG1hcmdpbi10b3A6IDI1cHg7XG4gICAgICAgIHRleHQtYWxpZ246IHJpZ2h0O1xuXG4gICAgICAgIC5zc0J1dHRvbiwgYSAuc3NCdXR0b24ge1xuICAgICAgICAgICAgZGlzcGxheTppbmxpbmUtYmxvY2s7XG5cbiAgICAgICAgICAgIGhlaWdodDoyMHB4O1xuICAgICAgICAgICAgXG4gICAgICAgICAgICBwYWRkaW5nOjNweCAxMnB4IDNweDtcbiAgICAgICAgICAgIG1hcmdpbi1sZWZ0OiAxNHB4O1xuICAgICAgICAgICAgXG4gICAgICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgICAgICBib3gtc2hhZG93OiAwcHggNHB4IDhweCAwcHggcmdiYSgwLCAwLCAwLCAwLjE1KTtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNGRkZGRkY7XG4gICAgICAgICAgICBcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMTJweDtcbiAgICAgICAgICAgIGNvbG9yOiAjNTI1MjUyO1xuICAgICAgICAgICAgbGluZS1oZWlnaHQ6IDIwcHg7XG4gICAgICAgICAgICBmb250LXdlaWdodDogbm9ybWFsO1xuICAgIFxuICAgICAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuXG4gICAgICAgICAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XG5cbiAgICAgICAgICAgIC5lbW9qaSB7XG4gICAgICAgICAgICAgICAgZm9udC1zaXplOiAxNXB4O1xuICAgICAgICAgICAgICAgIHZlcnRpY2FsLWFsaWduOiBib3R0b207XG4gICAgICAgICAgICB9XG4gICAgXG4gICAgICAgICAgICAmLmJsdWUge1xuICAgICAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICMxOWFjZWY7XG4gICAgICAgICAgICAgICAgY29sb3I6ICNGRkZGRkY7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICAuaWNvbiB7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IHVybCgnLi4vaW1hZ2VzL2ljb25CbHVlLnN2ZycpO1xuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogbm8tcmVwZWF0O1xuXG4gICAgICAgIHdpZHRoOjMwcHg7XG4gICAgICAgIGhlaWdodDozMHB4O1xuXG4gICAgICAgIHZlcnRpY2FsLWFsaWduOiB0b3A7XG4gICAgICAgIG1hcmdpbi1yaWdodDogMjJweDtcbiAgICAgICAgbWFyZ2luLXRvcDoycHg7XG5cbiAgICAgICAgZGlzcGxheTppbmxpbmUtYmxvY2s7XG4gICAgfVxuXG4gICAgLmJvZHkge1xuXG4gICAgICAgIGRpc3BsYXk6aW5saW5lLWJsb2NrO1xuICAgICAgICB3aWR0aDozMTVweDtcblxuICAgICAgICAudGl0bGUge1xuICAgICAgICAgICAgZm9udC1zaXplOiAxNXB4O1xuICAgICAgICAgICAgZm9udC13ZWlnaHQ6IDYwMDtcbiAgICAgICAgICAgIG1hcmdpbi1ib3R0b206IDdweDtcbiAgICAgICAgfVxuICAgICAgICAuZGVzY3JpcHRpb24ge1xuICAgICAgICAgICAgZm9udC1zaXplOiAxM3B4O1xuICAgICAgICAgICAgZm9udC13ZWlnaHQ6IGxpZ2h0ZXI7XG4gICAgICAgIH1cbiAgICB9XG5cbn0iLCJAdXNlIFwiU2NyZWVuc2hvdENvbnRyb2wvYnV0dG9uc1wiO1xuXG5AdXNlIFwiU2NyZWVuc2hvdENvbnRyb2wvbm90aWZpY2F0aW9uc1wiO1xuQHVzZSBcIlNjcmVlbnNob3RDb250cm9sL21vZGFsXCI7XG5cbmJvZHkge1xuXG5cdCNzc1RlbXBIb2xkZXIge1xuXHRcdHBvc2l0aW9uOmZpeGVkO1xuXHRcdHotaW5kZXg6MTAwMDAwMDAwMDAwMDtcblx0XHR3aWR0aDoxMDAlO1xuXHRcdGhlaWdodDoxMDAlO1xuXHRcdHRvcDowO1xuXHRcdHBvaW50ZXItZXZlbnRzOiBub25lO1xuXG5cdFx0dmlkZW8ge1xuXHRcdFx0d2lkdGg6YXV0byAhaW1wb3J0YW50O1xuXHRcdFx0aGVpZ2h0OmF1dG8gIWltcG9ydGFudDtcblx0XHRcdG1heC13aWR0aDoxMDAlICFpbXBvcnRhbnQ7XG5cdFx0XHRtYXgtaGVpZ2h0OiAxMDAlICFpbXBvcnRhbnQ7XG5cdFx0XHR0b3A6IDAgIWltcG9ydGFudDtcblx0XHRcdGxlZnQ6IDAgIWltcG9ydGFudDtcblx0XHRcdHRyYW5zZm9ybTogbm9uZSAhaW1wb3J0YW50O1xuXHRcdH1cblx0fVxuXG5cdCYuc3NUYWtlU2NyZWVuc2hvdCB7XG5cdFx0XG5cdFx0LnNzRWxlbWVudCB7XG5cdFx0XHR6LWluZGV4OiAxMDAwMDAwMDAwMDAgIWltcG9ydGFudDtcblx0XHR9XG5cdFx0XG5cdFx0Ji5zc05ldGZsaXgge1xuXHRcblx0XHRcdFtkYXRhLXVpYT12aWRlby1jYW52YXNdIHtcblx0XHRcdFx0ei1pbmRleDogMTAwMDAwMDA7XG5cdFx0XHR9XG5cdFx0XHRcblx0XHRcdHZpZGVvIHtcblx0XHRcdFx0YmFja2dyb3VuZC1jb2xvcjogIzAwMDAwMDtcblx0XHRcdFx0Ly9oZWlnaHQ6IGF1dG8gIWltcG9ydGFudDtcblx0XHRcdH1cblxuXHRcdFx0LnBsYXllci10aW1lZHRleHQge1xuXG5cdFx0XHRcdGRpc3BsYXk6bm9uZSAhaW1wb3J0YW50O1xuXHRcdFx0fVx0XHRcdFxuXG5cdFx0XHQmLnNob3dTdWJzIHtcblx0XHRcdFx0XG5cdFx0XHRcdC5wbGF5ZXItdGltZWR0ZXh0IHtcblxuXHRcdFx0XHRcdGRpc3BsYXk6IGJsb2NrICFpbXBvcnRhbnQ7XG5cdFx0XHRcdFx0Ly9ib3R0b206IDEwJSAhaW1wb3J0YW50O1xuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0FtYXpvbiB7XG5cblx0XHRcdC5kdi1wbGF5ZXItZnVsbHNjcmVlbiB2aWRlbyB7XG5cdFx0XHRcdHotaW5kZXg6IDk5OTk5OTk5ICFpbXBvcnRhbnQ7XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0Rpc25leSB7XG5cblx0XHRcdC5idG0tbWVkaWEtb3ZlcmxheXMtY29udGFpbmVyIHtcblx0XHRcdFx0ZGlzcGxheTpub25lO1xuXHRcdFx0fVxuXG5cdFx0XHQuVGltZWRUZXh0T3ZlcmxheSB7XG5cdFx0XHRcdGRpc3BsYXk6IG5vbmU7XG5cdFx0XHR9XG5cblx0XHRcdCYuc2hvd1N1YnMge1xuXHRcdFx0XHRcblx0XHRcdFx0LlRpbWVkVGV4dE92ZXJsYXkge1xuXHRcdFx0XHRcdGRpc3BsYXk6IGJsb2NrO1xuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0h1bHUge1xuXHRcdFx0LkNvbnRlbnRQbGF5ZXJfX2NvbnRlbnRBcmVhIHtcblx0XHRcdFx0ei1pbmRleDogMTAwMDAwMDAwMDA7XG4gICAgXHRcdFx0cG9zaXRpb246IHJlbGF0aXZlO1xuXHRcdFx0fVxuXG5cdFx0XHQuQ2xvc2VkQ2FwdGlvbiB7XG5cdFx0XHRcdGRpc3BsYXk6bm9uZTtcblx0XHRcdH1cblxuXHRcdFx0Ji5zaG93U3VicyB7XG5cdFx0XHRcdC5DbG9zZWRDYXB0aW9uIHtcblx0XHRcdFx0XHRkaXNwbGF5OmJsb2NrO1xuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc01heCB7XG5cblx0XHRcdHZpZGVvIHtcblx0XHRcdFx0ei1pbmRleDogOTk5OTk5OTk7XG5cdFx0XHRcdHBvc2l0aW9uOiByZWxhdGl2ZTtcblx0XHRcdH1cblxuXHRcdFx0Lypcblx0XHRcdC8vZG9uJ3Qga25vdyB3aGF0IHRoaXMgaXMgZm9yXG5cdFx0XHQqOmhhcyh2aWRlbykge1xuXHRcdFx0XHR6LWluZGV4OiA5OTk5OTk5OTtcblx0XHRcdFx0cG9zaXRpb246IHJlbGF0aXZlO1xuXHRcdFx0fSovXG5cblx0XHR9XG5cblx0XHQmLnNzWW91dHViZSB7XG5cblx0XHRcdC5odG1sNS12aWRlby1jb250YWluZXIsIC55dHAtY2FwdGlvbi13aW5kb3ctY29udGFpbmVyIHtcblx0XHRcdFx0ei1pbmRleDogOTk5OTk5OTk5ICFpbXBvcnRhbnQ7XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0FwcGxlIHtcblx0XHRcdCNhcHBsZS1tdXNpYy12aWRlby1wbGF5ZXIge1xuXHRcdFx0XHR6LWluZGV4OiA5OTk5OTk5OTkgIWltcG9ydGFudDtcblx0XHRcdH1cblxuXHRcdFx0LnZpZGVvLXBsYXllci1zY3JpbSB7XG5cdFx0XHRcdGRpc3BsYXk6bm9uZTtcblx0XHRcdH1cblx0XHR9XG5cdH1cblxuXHQuc3NXcmFwcGVyIHtcblx0XHRvdmVyZmxvdzogaGlkZGVuO1xuXHR9XG5cblxufSJdLCJzb3VyY2VSb290IjoiIn0= */</style></head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="http://10.133.2.200/ai/index.html"> UP </a>
+ |
+ <a accesskey="H" href="http://10.133.2.200/ai/index.html"> HOME </a>
+</div><div id="content" class="content">
+<h1 class="title">自然言語と時系列処理</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>目次</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="http://10.133.2.200/ai/nltime.html#orgf1bee3a">1. 準備</a></li>
+<li><a href="http://10.133.2.200/ai/nltime.html#org8ca3db9">2. bskyの分析</a></li>
+<li><a href="http://10.133.2.200/ai/nltime.html#orge2d5146">3. 演習</a></li>
+<li><a href="http://10.133.2.200/ai/nltime.html#org6fe7b30">4. 課題</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgf1bee3a" class="outline-2">
+<h2 id="orgf1bee3a"><span class="section-number-2">1.</span> 準備</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+以下の実験ではSNSのデータ取得を行うので
+</p>
+
+<p>
+<a href="https://bsky.app/">https://bsky.app</a>
+</p>
+
+<p>
+のアカウントを各自で取得してください。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org8ca3db9" class="outline-2">
+<h2 id="org8ca3db9"><span class="section-number-2">2.</span> bskyの分析</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+以下の例はbskyの
+「日銀」
+というキーワードを含む投稿を一週間ごとに集計して、
+Doc2vecと呼ばれる手法で数値ベクトルに変換している。
+このベクトル列をLSTMに入力すれば、もっと高い精度でグーグルトレンドの予測が可能となる。
+</p>
+
+
+<p>
+<a href="http://10.133.2.200/ai/dyn/examples/bsky2vec.py">dyn/examples/bsky2vec.py</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr">  1: </span># pip3 install atproto python-dateutil fugashi --break-system-packages
+<span class="linenr">  2: </span>
+<span class="linenr">  3: </span>import re
+<span class="linenr">  4: </span>import numpy  as np
+<span class="linenr">  5: </span>import pandas as pd
+<span class="linenr">  6: </span>
+<span class="linenr">  7: </span>from datetime import datetime, timezone, timedelta
+<span class="linenr">  8: </span>from dateutil.relativedelta import relativedelta
+<span class="linenr">  9: </span>from atproto import Client
+<span class="linenr"> 10: </span>from atproto_client.models.app.bsky.feed.search_posts import Params
+<span class="linenr"> 11: </span>
+<span class="linenr"> 12: </span>from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+<span class="linenr"> 13: </span>
+<span class="linenr"> 14: </span>
+<span class="linenr"> 15: </span>
+<span class="linenr"> 16: </span>
+<span class="linenr"> 17: </span>ACOUNT='xxxxx@omu.ac.jp'
+<span class="linenr"> 18: </span>PASSWD='passwd'
+<span class="linenr"> 19: </span>KWD='日銀'
+<span class="linenr"> 20: </span>
+<span class="linenr"> 21: </span>
+<span class="linenr"> 22: </span>
+<span class="linenr"> 23: </span>def search_posts(
+<span class="linenr"> 24: </span>        query: str,
+<span class="linenr"> 25: </span>        since_date: str, until_date: str ,
+<span class="linenr"> 26: </span>        email: str, app_password: str,
+<span class="linenr"> 27: </span>        per_page: int = 100, max_pages: int = 50,
+<span class="linenr"> 28: </span>):
+<span class="linenr"> 29: </span>
+<span class="linenr"> 30: </span>    client = Client()
+<span class="linenr"> 31: </span>    client.login(email, app_password)
+<span class="linenr"> 32: </span>
+<span class="linenr"> 33: </span>    cursor = None
+<span class="linenr"> 34: </span>    results = []
+<span class="linenr"> 35: </span>    for _ in range(max_pages):
+<span class="linenr"> 36: </span>        params = Params(q=query, limit=per_page, cursor=cursor,
+<span class="linenr"> 37: </span>                        since=since_date, until=until_date)
+<span class="linenr"> 38: </span>        res = client.app.bsky.feed.search_posts(params=params)
+<span class="linenr"> 39: </span>        posts = res.posts or []
+<span class="linenr"> 40: </span>        results.extend(posts)
+<span class="linenr"> 41: </span>        cursor = getattr(res, "cursor", None)
+<span class="linenr"> 42: </span>        if not cursor or not posts:
+<span class="linenr"> 43: </span>            break
+<span class="linenr"> 44: </span>    return results
+<span class="linenr"> 45: </span>
+<span class="linenr"> 46: </span>def posts_to_df(posts):
+<span class="linenr"> 47: </span>    rows = []
+<span class="linenr"> 48: </span>    for p in posts:
+<span class="linenr"> 49: </span>        record = getattr(p, "record", {}) or {}
+<span class="linenr"> 50: </span>        text = getattr(record, "text", None) or record.get("text", "")
+<span class="linenr"> 51: </span>        created_at = getattr(record, "created_at", None) or record.get("createdAt")
+<span class="linenr"> 52: </span>
+<span class="linenr"> 53: </span>        if created_at:
+<span class="linenr"> 54: </span>            # createdAt は ISO 8601 文字列
+<span class="linenr"> 55: </span>            dt = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+<span class="linenr"> 56: </span>            ts = int(dt.timestamp())  # Unix time (秒)
+<span class="linenr"> 57: </span>        else:
+<span class="linenr"> 58: </span>            ts = None
+<span class="linenr"> 59: </span>
+<span class="linenr"> 60: </span>        rows.append({
+<span class="linenr"> 61: </span>            "unixtime": ts,
+<span class="linenr"> 62: </span>            "uri": getattr(p, "uri", None),
+<span class="linenr"> 63: </span>            "handle": getattr(getattr(p, "author", None), "handle", None),
+<span class="linenr"> 64: </span>            "text": text,
+<span class="linenr"> 65: </span>        })
+<span class="linenr"> 66: </span>
+<span class="linenr"> 67: </span>    df = pd.DataFrame(rows).dropna(subset=["unixtime"])
+<span class="linenr"> 68: </span>    df = df.set_index("unixtime").sort_index()
+<span class="linenr"> 69: </span>    return df
+<span class="linenr"> 70: </span>
+<span class="linenr"> 71: </span>
+<span class="linenr"> 72: </span># --- 1) クリーニング &amp; トークナイズ ----------------------------
+<span class="linenr"> 73: </span>def clean_text(s: str) -&gt; str:
+<span class="linenr"> 74: </span>    if not isinstance(s, str):
+<span class="linenr"> 75: </span>        return ""
+<span class="linenr"> 76: </span>    s = s.lower()
+<span class="linenr"> 77: </span>    s = re.sub(r'https?://\S+', ' ', s)       # URL除去
+<span class="linenr"> 78: </span>    s = re.sub(r'@[A-Za-z0-9_\.]+', ' ', s)   # @mention簡易除去
+<span class="linenr"> 79: </span>    s = re.sub(r'\s+', ' ', s).strip()
+<span class="linenr"> 80: </span>    return s
+<span class="linenr"> 81: </span>
+<span class="linenr"> 82: </span>def _tokenize_with_fugashi(text: str):
+<span class="linenr"> 83: </span>    try:
+<span class="linenr"> 84: </span>        from fugashi import Tagger
+<span class="linenr"> 85: </span>        tagger = Tagger()
+<span class="linenr"> 86: </span>        return [w.surface for w in tagger(text)]
+<span class="linenr"> 87: </span>    except Exception:
+<span class="linenr"> 88: </span>        return None  # 失敗時はフォールバックへ
+<span class="linenr"> 89: </span>
+<span class="linenr"> 90: </span>def _tokenize_fallback(text: str):
+<span class="linenr"> 91: </span>    # 日本語（空白が少ない）なら文字2-gram、英数混在なら空白split
+<span class="linenr"> 92: </span>    if ' ' not in text:
+<span class="linenr"> 93: </span>        chars = [c for c in re.sub(r'\s+', '', text)]
+<span class="linenr"> 94: </span>        return [a+b for a, b in zip(chars, chars[1:])] or chars
+<span class="linenr"> 95: </span>    else:
+<span class="linenr"> 96: </span>        return re.findall(r"[A-Za-z0-9_#@]+|[一-龥ぁ-んァ-ヶー]+", text)
+<span class="linenr"> 97: </span>
+<span class="linenr"> 98: </span>def tokenize(text: str):
+<span class="linenr"> 99: </span>    text = clean_text(text)
+<span class="linenr">100: </span>    toks = _tokenize_with_fugashi(text)
+<span class="linenr">101: </span>    return toks if toks else _tokenize_fallback(text)
+<span class="linenr">102: </span>
+<span class="linenr">103: </span># --- 2) 週（JST）にまとめて TaggedDocument 化 -------------------
+<span class="linenr">104: </span>def make_weekly_documents(df: pd.DataFrame,
+<span class="linenr">105: </span>                          text_col: str = "text",
+<span class="linenr">106: </span>                          jst: bool = True,
+<span class="linenr">107: </span>                          rule: str = "W-MON"):
+<span class="linenr">108: </span>    """
+<span class="linenr">109: </span>    df: index=unixtime(秒) の DataFrame を想定。textカラム必須。
+<span class="linenr">110: </span>    jst=TrueならJST(UTC+9)に変換して週集計（rule=W-MON: 月曜始まり）
+<span class="linenr">111: </span>    """
+<span class="linenr">112: </span>    assert text_col in df.columns, f"'{text_col}' column not found"
+<span class="linenr">113: </span>    s = df[text_col].fillna("").astype(str)
+<span class="linenr">114: </span>
+<span class="linenr">115: </span>    # index(unixtime秒) → datetime（UTC）
+<span class="linenr">116: </span>    dt_utc = pd.to_datetime(df.index, unit="s", utc=True)
+<span class="linenr">117: </span>    if jst:
+<span class="linenr">118: </span>        tz = timezone(timedelta(hours=9))
+<span class="linenr">119: </span>        dt = dt_utc.tz_convert(tz)
+<span class="linenr">120: </span>    else:
+<span class="linenr">121: </span>        dt = dt_utc
+<span class="linenr">122: </span>
+<span class="linenr">123: </span>    tmp = pd.DataFrame({"text": s, "dt": dt})
+<span class="linenr">124: </span>    # 週ごとにテキスト結合
+<span class="linenr">125: </span>    weekly = tmp.resample(rule, on="dt")["text"].apply(lambda x: "\n".join(x)).dropna()
+<span class="linenr">126: </span>    # 週の代表日時（期首）を index に
+<span class="linenr">127: </span>    weekly.index.name = "week_start"
+<span class="linenr">128: </span>
+<span class="linenr">129: </span>    # TaggedDocument 化
+<span class="linenr">130: </span>    docs = []
+<span class="linenr">131: </span>    tags = []
+<span class="linenr">132: </span>    for ws, text in weekly.items():
+<span class="linenr">133: </span>        tokens = tokenize(text)
+<span class="linenr">134: </span>        tag = f"week_{ws.strftime('%Y-%m-%d')}"
+<span class="linenr">135: </span>        docs.append(TaggedDocument(words=tokens, tags=[tag]))
+<span class="linenr">136: </span>        tags.append((ws, tag))
+<span class="linenr">137: </span>    return docs, tags  # tags: [(Timestamp, "week_YYYY-MM-DD"), ...]
+<span class="linenr">138: </span>
+<span class="linenr">139: </span># --- 3) Doc2Vec を訓練 → 週ベクトルの DataFrame -----------------
+<span class="linenr">140: </span>def train_doc2vec_and_vectorize(docs,
+<span class="linenr">141: </span>                                vector_size: int = 128,
+<span class="linenr">142: </span>                                window: int = 10,
+<span class="linenr">143: </span>                                min_count: int = 2,
+<span class="linenr">144: </span>                                epochs: int = 40,
+<span class="linenr">145: </span>                                dm: int = 1,
+<span class="linenr">146: </span>                                seed: int = 42):
+<span class="linenr">147: </span>    model = Doc2Vec(vector_size=vector_size,
+<span class="linenr">148: </span>                    window=window,
+<span class="linenr">149: </span>                    min_count=min_count,
+<span class="linenr">150: </span>                    workers=4,
+<span class="linenr">151: </span>                    epochs=epochs,
+<span class="linenr">152: </span>                    dm=dm,
+<span class="linenr">153: </span>                    seed=seed)
+<span class="linenr">154: </span>    model.build_vocab(docs)
+<span class="linenr">155: </span>    model.train(docs, total_examples=len(docs), epochs=model.epochs)
+<span class="linenr">156: </span>    return model
+<span class="linenr">157: </span>
+<span class="linenr">158: </span>def weekly_vectors_df(model: Doc2Vec, tags):
+<span class="linenr">159: </span>    # tags: [(week_start_ts, "week_YYYY-MM-DD"), ...]
+<span class="linenr">160: </span>    rows = []
+<span class="linenr">161: </span>    index = []
+<span class="linenr">162: </span>    for ws, tag in tags:
+<span class="linenr">163: </span>        vec = model.dv[tag]  # 学習済み → 直接取り出し
+<span class="linenr">164: </span>        rows.append(vec)
+<span class="linenr">165: </span>        index.append(ws)
+<span class="linenr">166: </span>    mat = np.vstack(rows) if rows else np.zeros((0, model.vector_size))
+<span class="linenr">167: </span>    dfv = pd.DataFrame(mat, index=pd.DatetimeIndex(index, name="week_start"))
+<span class="linenr">168: </span>    return dfv.sort_index()
+<span class="linenr">169: </span>
+<span class="linenr">170: </span># --- 4) 使い方（例） -------------------------------------------
+<span class="linenr">171: </span>
+<span class="linenr">172: </span>since_date='2024-07-31T15:00:00Z'
+<span class="linenr">173: </span>until_date='2025-08-31T15:00:00Z'
+<span class="linenr">174: </span>
+<span class="linenr">175: </span>posts = search_posts(
+<span class="linenr">176: </span>    KWD,
+<span class="linenr">177: </span>    since_date,
+<span class="linenr">178: </span>    until_date,
+<span class="linenr">179: </span>    ACOUNT,
+<span class="linenr">180: </span>    PASSWD,
+<span class="linenr">181: </span>    100, 50,
+<span class="linenr">182: </span>)
+<span class="linenr">183: </span># for p in posts:
+<span class="linenr">184: </span>#     print(p.uri, p.author.handle, getattr(p.record, "text", ""))
+<span class="linenr">185: </span>
+<span class="linenr">186: </span>
+<span class="linenr">187: </span>posts_df = posts_to_df(posts)
+<span class="linenr">188: </span>#print(posts_df.head())
+<span class="linenr">189: </span>print(posts_df)
+<span class="linenr">190: </span>
+<span class="linenr">191: </span>
+<span class="linenr">192: </span>
+<span class="linenr">193: </span># posts_df は「unixtime を index」「text カラム」を持つ DataFrame を想定
+<span class="linenr">194: </span># posts_df = posts_to_df(posts)  # 以前作った関数がある場合
+<span class="linenr">195: </span>
+<span class="linenr">196: </span>docs, tags = make_weekly_documents(posts_df, text_col="text", jst=True, rule="W-MON")
+<span class="linenr">197: </span>model = train_doc2vec_and_vectorize(docs, vector_size=128, window=10, min_count=2, epochs=40, dm=1)
+<span class="linenr">198: </span>vecdf = weekly_vectors_df(model, tags)
+<span class="linenr">199: </span>print(vecdf.shape)   # (週数, 128)
+<span class="linenr">200: </span>print(vecdf.head())  # 週ごとの特徴ベクトル（時系列）
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orge2d5146" class="outline-2">
+<h2 id="orge2d5146"><span class="section-number-2">3.</span> 演習</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>自分が興味ある単語のについてbskyの投稿を取得してみよう</li>
+<li>取得した特徴をDoc2vecで数値にしてみよう</li>
+<li>ここでは週ごとにまとめているが日ごとにまとめることもできる。マイナーな単語ではなく、必ず誰かが毎日投稿するようなキーワードにして、日毎にベクトルを計算してみよう</li>
+<li>Unix time とJSTの関係を調べてみよう。このプログラムでは、どこでその処理を行っているか確認</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org6fe7b30" class="outline-2">
+<h2 id="org6fe7b30"><span class="section-number-2">4.</span> 課題</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>自分が興味ある単語のについてbskyの投稿を取得して、そのベクトル表現からgoogleトレンドを予測するLSTMを作れ。</li>
+<li>そのLSTMの計算結果から何がわかるか考察せよ</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">著者: Hirotaka Niitsuma</p>
+<p class="email">Email: <a href="mailto:hirotakaniitsuma@omu.ac.jp">hirotakaniitsuma@omu.ac.jp</a></p>
+<p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.1 (<a href="https://orgmode.org/">Org</a> mode 9.6.6)</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+
+</body></html>
