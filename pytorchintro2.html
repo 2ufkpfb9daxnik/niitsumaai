@@ -1,0 +1,646 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0040)http://10.133.2.200/ai/pytorchintro.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja" style="--vsc-domain: &quot;10.133.2.200&quot;;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pytorch 入門</title>
+<meta name="author" content="Hirotaka Niitsuma">
+<meta name="generator" content="Org Mode">
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="./pytorch 入門_files/text.css"><script src="./pytorch 入門_files/jquery-1.9.1.min.js.ダウンロード"></script>
+<style>.ssBtnDefault{position:absolute;z-index:100000000;background:none;border:none;outline:none;right:0;cursor:pointer;width:26px;height:26px;margin:0;padding:0;top:8px;right:8px;opacity:.6;pointer-events:all;transition-duration:.25s}.ssBtnDefault:hover{opacity:1 !important;transition-duration:.25s}.ssBtnDefault .fade{transition-duration:5s;opacity:0}.ssBtnYouTube{background:none;border:none;margin-right:20px !important;padding-top:0px !important;width:25px !important}.ytp-embed .ssBtnYouTube{width:20px !important;margin-right:15px !important}.ssBtnVimeo{height:2rem !important;width:2rem !important;margin-top:8px !important}.ssBtnVimeo button{width:100% !important;height:100% !important}.ssBtnVimeo button svg{width:19px}.ssBtnNetflix{background:none;border:none;cursor:pointer;width:4rem;margin:0 .5rem;display:inline-block;flex-shrink:0}.ssBtnNetflix>svg{transform:translateY(-0.5rem)}.ssBtnNetflix:hover{transform:scale(1.2);transition-duration:.25s}.ssBtnHulu{width:27px;margin-top:4px;margin-right:10px;opacity:.7;cursor:pointer}.ssBtnHulu:hover{opacity:1}.ssBtnAmazon{margin-left:1.5vw;outline:none;cursor:pointer;opacity:.8}.ssBtnAmazon:hover{opacity:1}@media(min-width: 1200px){.ssBtnAmazon{width:1.6666666667vw;height:1.6666666667vw}}@media(max-width: 1199px){.ssBtnAmazon{width:20px;height:20px}}.ssBtnMax{width:24px;height:24px;margin:4px;padding:12px;box-sizing:content-box;position:relative;opacity:.7;cursor:pointer;display:flex;justify-content:center;align-items:center}.ssBtnMax:hover{opacity:1;transform:scale(1.2)}.ssBtnMax svg{width:24px;height:24px}.ssBtnDisney{opacity:.7}.ssBtnDisney:hover{opacity:1}.ssBtnDisney svg{width:25px !important;height:31px !important;padding-top:4px;margin-right:7px}.ssBtnApple{cursor:pointer;opacity:.7}.ssBtnApple:hover{opacity:1}.ssBtnApple svg{width:22px !important;height:22px !important;margin-right:2px !important}body .vsNotification{display:flex;width:100%;height:4rem;justify-content:center;align-items:center;position:fixed;z-index:1000000000;top:-4rem;padding:.75rem 1.25em;border:1px solid rgba(0,0,0,0);border-radius:.25em;font-size:12px;height:fit-content;justify-self:center;width:auto;animation-name:notification;animation-iteration-count:1;animation-duration:2s}@keyframes notification{0%{top:-4rem}25%{top:3rem}85%{top:3rem}100%{top:-4rem}}body .vsNotification.persist{top:3rem;animation-name:notification-persist;animation-iteration-count:1;animation-duration:1s}@keyframes notification-persist{0%{top:-4rem}100%{top:3rem}}body .vsNotification.success{background-color:#d4edda;border-color:#c3e6cb;color:#155724}body .vsNotification.fail{background-color:#edd4d4;border-color:#e6c3c3;color:#b62424}body .vsNotification .vsNotificationClose{color:#b62424;border:none;background-color:rgba(0,0,0,0);padding:0;line-height:0;position:relative;left:.5rem;cursor:pointer}body .vsNotification .vsNContent{position:absolute;z-index:1000000000;margin-bottom:1em;padding:.75rem 1.25em;border:1px solid rgba(0,0,0,0);border-radius:.25em;font-size:12px;height:fit-content;top:0}body .vsNotification a{color:#b62424}.ssModal{display:none;position:fixed;z-index:100000000;right:20px;opacity:0;background-color:#fffefa;border-radius:3px;padding:25px;color:#525252;font-family:muli,sans-serif;box-shadow:0px 4px 8px 0px rgba(0,0,0,.15);animation-name:animateOn;animation-duration:.2s;animation-fill-mode:forwards}.ssModal.visible{display:block}.ssModal *{vertical-align:middle;line-height:normal;font-weight:normal}@keyframes animateOn{from{opacity:0;top:0px}to{opacity:1;top:20px}}.ssModal .close{position:absolute;right:10px;top:10px;cursor:pointer;opacity:.5;background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA0NDMuNCA0NDMuNCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDQzLjQgNDQzLjQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggZD0iTTYuOCw0MDMuNWwxODEuOC0xODEuOEw2LjgsMzkuOWMtNS45LTUuOS04LjItMTQuNS02LTIyLjZDMyw5LjIsOS4yLDMsMTcuMywwLjhjOC4xLTIuMiwxNi43LDAuMSwyMi42LDZsMTgxLjgsMTgxLjgKCUw0MDMuNSw2LjhjNS45LTUuOSwxNC41LTguMiwyMi42LTZjOC4xLDIuMiwxNC40LDguNCwxNi41LDE2LjVjMi4yLDguMS0wLjEsMTYuNy02LDIyLjZMMjU0LjcsMjIxLjdsMTgxLjgsMTgxLjgKCWM1LjksNS45LDguMiwxNC41LDYsMjIuNmMtMi4yLDguMS04LjQsMTQuNC0xNi41LDE2LjVjLTguMSwyLjItMTYuNy0wLjEtMjIuNi02TDIyMS43LDI1NC43TDM5LjksNDM2LjVjLTUuOSw1LjktMTQuNSw4LjItMjIuNiw2CglDOS4yLDQ0MC40LDMsNDM0LjEsMC44LDQyNkMtMS40LDQxOCwwLjksNDA5LjQsNi44LDQwMy41TDYuOCw0MDMuNXoiLz4KPC9zdmc+Cg==);width:10px;height:10px}.ssModal .ssButtons{margin-top:25px;text-align:right}.ssModal .ssButtons .ssButton,.ssModal .ssButtons a .ssButton{display:inline-block;height:20px;padding:3px 12px 3px;margin-left:14px;border-radius:4px;box-shadow:0px 4px 8px 0px rgba(0,0,0,.15);background-color:#fff;font-size:12px;color:#525252;line-height:20px;font-weight:normal;cursor:pointer;text-decoration:none}.ssModal .ssButtons .ssButton .emoji,.ssModal .ssButtons a .ssButton .emoji{font-size:15px;vertical-align:bottom}.ssModal .ssButtons .ssButton.blue,.ssModal .ssButtons a .ssButton.blue{background-color:#19acef;color:#fff}.ssModal .icon{background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI1LjIuMywgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIKCSBpZD0iTGF5ZXJfMSIgeG1sbnM6Y2M9Imh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL25zIyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIiB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCgkgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCAxMDAgODMuOSIKCSBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMDAgODMuOTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwMEFERUY7fQo8L3N0eWxlPgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC05NTIuMzYyMTgpIj4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0zNS42LDk1Mi40Yy0xLjMsMC0yLjQsMS0yLjksMS44bC01LjYsMTEuMUgxMWMtNiwwLTExLDUtMTEsMTF2NDljMCw2LDUsMTEsMTEsMTFoNzhjNiwwLDExLTUsMTEtMTF2LTQ5CgkJYzAtNi01LTExLTExLTExSDcyLjlsLTUuNi0xMS4xYy0wLjUtMS4xLTEuNi0xLjgtMi45LTEuOEwzNS42LDk1Mi40TDM1LjYsOTUyLjR6IE0zNy42LDk1OC44aDI1LjJsNS41LDExLjEKCQljMC41LDEuMSwxLjYsMS44LDIuOSwxLjhoMTguMWMyLjYsMCw0LjUsMS45LDQuNSw0LjV2NDljMCwyLjYtMS45LDQuNS00LjUsNC41SDExLjFjLTIuNiwwLTQuNS0xLjktNC41LTQuNXYtNDkKCQljMC0yLjYsMS45LTQuNSw0LjUtNC41aDE4LjFjMS4xLDAsMi40LTAuOCwyLjktMS44TDM3LjYsOTU4Ljh6IE01MC4yLDk3OS44Yy0xMS42LDAtMjEsOS40LTIxLDIxczkuNCwyMSwyMSwyMXMyMS05LjQsMjEtMjEKCQlTNjEuOCw5NzkuOCw1MC4yLDk3OS44eiBNNTAuMiw5ODYuMmM4LjEsMCwxNC41LDYuNSwxNC41LDE0LjVzLTYuNSwxNC41LTE0LjUsMTQuNXMtMTQuNS02LjUtMTQuNS0xNC41UzQyLjEsOTg2LjIsNTAuMiw5ODYuMnoiLz4KPC9nPgo8L3N2Zz4K);background-repeat:no-repeat;width:30px;height:30px;vertical-align:top;margin-right:22px;margin-top:2px;display:inline-block}.ssModal .body{display:inline-block;width:315px}.ssModal .body .title{font-size:15px;font-weight:600;margin-bottom:7px}.ssModal .body .description{font-size:13px;font-weight:lighter}body #ssTempHolder{position:fixed;z-index:1000000000000;width:100%;height:100%;top:0;pointer-events:none}body #ssTempHolder video{width:auto !important;height:auto !important;max-width:100% !important;max-height:100% !important;top:0 !important;left:0 !important;transform:none !important}body.ssTakeScreenshot .ssElement{z-index:100000000000 !important}body.ssTakeScreenshot.ssNetflix [data-uia=video-canvas]{z-index:10000000}body.ssTakeScreenshot.ssNetflix video{background-color:#000}body.ssTakeScreenshot.ssNetflix .player-timedtext{display:none !important}body.ssTakeScreenshot.ssNetflix.showSubs .player-timedtext{display:block !important}body.ssTakeScreenshot.ssAmazon .dv-player-fullscreen video{z-index:99999999 !important}body.ssTakeScreenshot.ssDisney .btm-media-overlays-container{display:none}body.ssTakeScreenshot.ssDisney .TimedTextOverlay{display:none}body.ssTakeScreenshot.ssDisney.showSubs .TimedTextOverlay{display:block}body.ssTakeScreenshot.ssHulu .ContentPlayer__contentArea{z-index:10000000000;position:relative}body.ssTakeScreenshot.ssHulu .ClosedCaption{display:none}body.ssTakeScreenshot.ssHulu.showSubs .ClosedCaption{display:block}body.ssTakeScreenshot.ssMax video{z-index:99999999;position:relative}body.ssTakeScreenshot.ssYoutube .html5-video-container,body.ssTakeScreenshot.ssYoutube .ytp-caption-window-container{z-index:999999999 !important}body.ssTakeScreenshot.ssApple #apple-music-video-player{z-index:999999999 !important}body.ssTakeScreenshot.ssApple .video-player-scrim{display:none}body .ssWrapper{overflow:hidden}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3Njc3MvU2NyZWVuc2hvdENvbnRyb2wvX2J1dHRvbnMuc2NzcyIsIndlYnBhY2s6Ly8uL3Njc3MvU2NyZWVuc2hvdENvbnRyb2wvX25vdGlmaWNhdGlvbnMuc2NzcyIsIndlYnBhY2s6Ly8uL3Njc3MvU2NyZWVuc2hvdENvbnRyb2wvX21vZGFsLnNjc3MiLCJ3ZWJwYWNrOi8vLi9zY3NzL1NjcmVlbnNob3RDb250cm9sLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsY0FFQyxpQkFBQSxDQUNBLGlCQUFBLENBQ0EsZUFBQSxDQUNBLFdBQUEsQ0FDQSxZQUFBLENBQ0EsT0FBQSxDQUNBLGNBQUEsQ0FFQSxVQUFBLENBQ0EsV0FBQSxDQUNBLFFBQUEsQ0FDQSxTQUFBLENBQ0EsT0FBQSxDQUNBLFNBQUEsQ0FFQSxVQUFBLENBQ0Esa0JBQUEsQ0FFRyx3QkFBQSxDQUVBLG9CQUNJLG9CQUFBLENBQ0Esd0JBQUEsQ0FHSixvQkFDSSxzQkFBQSxDQUNBLFNBQUEsQ0FRUixjQUVDLGVBQUEsQ0FDQSxXQUFBLENBRUEsNEJBQUEsQ0FDRywwQkFBQSxDQUNBLHFCQUFBLENBRUgseUJBQ0MscUJBQUEsQ0FDQSw0QkFBQSxDQUlGLFlBRUMsc0JBQUEsQ0FDRyxxQkFBQSxDQUVBLHlCQUFBLENBRUgsbUJBRUMscUJBQUEsQ0FDQSxzQkFBQSxDQUVBLHVCQUNDLFVBQUEsQ0FNSCxjQUNDLGVBQUEsQ0FDQSxXQUFBLENBQ0EsY0FBQSxDQUVBLFVBQUEsQ0FFQSxjQUFBLENBR0Esb0JBQUEsQ0FDQSxhQUFBLENBVUEsa0JBRUMsNkJBQUEsQ0FJRSxvQkFDSSxvQkFBQSxDQUNILHdCQUFBLENBSUwsV0FFQyxVQUFBLENBQ0EsY0FBQSxDQUNBLGlCQUFBLENBQ0EsVUFBQSxDQUNBLGNBQUEsQ0FFQSxpQkFDQyxTQUFBLENBSUYsYUFDQyxpQkFBQSxDQUVBLFlBQUEsQ0FFRyxjQUFBLENBQ0EsVUFBQSxDQUlBLG1CQUNJLFNBQUEsQ0FJUiww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bUJBQUEsQ0NySFgsbUJBQ0MsY0FBQSxDQUNBLHFCQUFBLENBQ0EsVUFBQSxDQUNBLFdBQUEsQ0FDQSxLQUFBLENBQ0EsbUJBQUEsQ0FFQSx5QkFDQyxxQkFBQSxDQUNBLHNCQUFBLENBQ0EseUJBQUEsQ0FDQSwwQkFBQSxDQUNBLGdCQUFBLENBQ0EsaUJBQUEsQ0FDQSx5QkFBQSxDQU1ELGlDQUNDLCtCQUFBLENBS0Esd0RBQ0MsZ0JBQUEsQ0FHRCxzQ0FDQyxxQkFBQSxDQUlELGtEQUVDLHVCQUFBLENBS0EsMkRBRUMsd0JBQUEsQ0FRRiwyREFDQywyQkFBQSxDQU1ELDZEQUNDLFlBQUEsQ0FHRCxpREFDQyxZQUFBLENBS0EsMERBQ0MsYUFBQSxDQU1GLHlEQUNDLG1CQUFBLENBQ0csaUJBQUEsQ0FHSiw0Q0FDQyxZQUFBLENBSUEscURBQ0MsYUFBQSxDQU9GLGtDQUNDLGdCQUFBLENBQ0EsaUJBQUEsQ0FjRCxxSEFDQyw0QkFBQSxDQUtELHdEQUNDLDRCQUFBLENBR0Qsa0RBQ0MsWUFBQSxDQUtILGdCQUNDLGVBQUEiLCJzb3VyY2VzQ29udGVudCI6WyIuc3NCdG5EZWZhdWx0IHtcblx0XG5cdHBvc2l0aW9uOiBhYnNvbHV0ZTtcblx0ei1pbmRleDogMTAwMDAwMDAwO1xuXHRiYWNrZ3JvdW5kOm5vbmU7XG5cdGJvcmRlcjogbm9uZTtcblx0b3V0bGluZTogbm9uZTtcblx0cmlnaHQ6MDtcblx0Y3Vyc29yOiBwb2ludGVyO1xuXHRcblx0d2lkdGg6IDI2cHg7XG5cdGhlaWdodDogMjZweDtcblx0bWFyZ2luOiAwOy8vNSUgOHB4IDA7XG5cdHBhZGRpbmc6MDtcblx0dG9wOjhweDtcblx0cmlnaHQ6OHB4O1xuXHRcblx0b3BhY2l0eTogLjY7XG5cdHBvaW50ZXItZXZlbnRzOiBhbGw7XG5cdC8qdHJhbnNpdGlvbi1maWxsLW1vZGU6IGZvcndhcmRzOyovXG4gICAgdHJhbnNpdGlvbi1kdXJhdGlvbjogLjI1cztcblxuICAgICY6aG92ZXIge1xuICAgICAgICBvcGFjaXR5OiAxICFpbXBvcnRhbnQ7IFxuICAgICAgICB0cmFuc2l0aW9uLWR1cmF0aW9uOiAuMjVzO1xuICAgIH1cblxuICAgIC5mYWRlIHtcbiAgICAgICAgdHJhbnNpdGlvbi1kdXJhdGlvbjogNXM7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgfVxuICAgIFxuICAgIC8qc3ZnIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjpyZWQ7XG4gICAgfSovXG59XG5cbi5zc0J0bllvdVR1YmUge1xuXG5cdGJhY2tncm91bmQ6bm9uZTtcblx0Ym9yZGVyOiBub25lO1xuXHRcblx0bWFyZ2luLXJpZ2h0OiAyMHB4ICFpbXBvcnRhbnQ7XG4gICAgcGFkZGluZy10b3A6IDBweCAhaW1wb3J0YW50O1xuICAgIHdpZHRoOiAyNXB4ICFpbXBvcnRhbnQ7XG5cblx0Lnl0cC1lbWJlZCAmIHtcblx0XHR3aWR0aDogMjBweCAhaW1wb3J0YW50O1xuXHRcdG1hcmdpbi1yaWdodDogMTVweCAhaW1wb3J0YW50O1xuXHR9XG59XG5cbi5zc0J0blZpbWVvIHtcblxuXHRoZWlnaHQ6IDJyZW0gIWltcG9ydGFudDtcbiAgICB3aWR0aDogMnJlbSAhaW1wb3J0YW50O1xuICAgIC8vcGFkZGluZzogNnB4ICFpbXBvcnRhbnQ7XG4gICAgbWFyZ2luLXRvcDogOHB4ICFpbXBvcnRhbnQ7XG5cblx0YnV0dG9uIHtcblxuXHRcdHdpZHRoOiAxMDAlICFpbXBvcnRhbnQ7XG5cdFx0aGVpZ2h0OiAxMDAlICFpbXBvcnRhbnQ7XG5cdFx0XG5cdFx0c3ZnIHtcblx0XHRcdHdpZHRoOiAxOXB4O1xuXHRcdH1cblx0fVxuXG59XG5cbi5zc0J0bk5ldGZsaXgge1xuXHRiYWNrZ3JvdW5kOm5vbmU7XG5cdGJvcmRlcjogbm9uZTtcblx0Y3Vyc29yOiBwb2ludGVyO1xuXG5cdHdpZHRoOjRyZW07XG5cdFxuXHRtYXJnaW46IDAgMC41cmVtO1xuXHQvL21hcmdpbjogMCAycmVtIDAgNHJlbTtcblxuXHRkaXNwbGF5OmlubGluZS1ibG9jaztcblx0ZmxleC1zaHJpbms6IDA7XG5cdFxuXHQvL21hcmdpbi10b3A6LTFyZW07XG5cdC8vaGVpZ2h0OjIuNHJlbTtcblx0Ly93aWR0aDogNTBweDtcblx0Ly9oZWlnaHQ6IDM1cHggIWltcG9ydGFudDtcblx0Ly93aWR0aDogMTAwJTsvLzMuNmVtICFpbXBvcnRhbnQ7XG4gICAgLy9oZWlnaHQ6IDEwMCU7Ly8xLjZlbSAhaW1wb3J0YW50O1xuXHQvL3BhZGRpbmc6MCAwIC42ZW0gMDtcblxuXHQmID4gc3ZnIHtcblx0XHQvL21hcmdpbi10b3A6LS4zcmVtO1xuXHRcdHRyYW5zZm9ybTp0cmFuc2xhdGVZKC0uNXJlbSk7XG5cdFx0Ly90cmFuc2Zvcm06IHNjYWxlKC41KTtcblx0fVxuICAgIFxuICAgICY6aG92ZXIge1xuICAgICAgICB0cmFuc2Zvcm06c2NhbGUoMS4yKTtcblx0ICAgIHRyYW5zaXRpb24tZHVyYXRpb246IC4yNXM7XG4gICAgfVxufVxuXG4uc3NCdG5IdWx1IHtcblx0XG5cdHdpZHRoOiAyN3B4O1xuXHRtYXJnaW4tdG9wOiA0cHg7XG5cdG1hcmdpbi1yaWdodDoxMHB4O1xuXHRvcGFjaXR5OiAuNztcblx0Y3Vyc29yOiBwb2ludGVyO1xuXHRcblx0Jjpob3ZlciB7XG5cdFx0b3BhY2l0eTogMTtcblx0fVxufVxuXG4uc3NCdG5BbWF6b24ge1xuXHRtYXJnaW4tbGVmdDogMS41dnc7XG4gICAgXG5cdG91dGxpbmU6IG5vbmU7XG5cdFxuICAgXHRjdXJzb3I6IHBvaW50ZXI7XG4gICBcdG9wYWNpdHk6IC44O1xuXG4gICBcdC8vei1pbmRleDogOTk5OTk5OTk5OTtcblxuICAgICY6aG92ZXIge1xuICAgICAgICBvcGFjaXR5OiAxO1xuICAgIH1cbn1cblxuQG1lZGlhIChtaW4td2lkdGg6IDEyMDBweCkgeyAuc3NCdG5BbWF6b24geyB3aWR0aDogMS42NjY2NjY2NjY2NjY2NjY1dnc7IGhlaWdodDogMS42NjY2NjY2NjY2NjY2NjY1dnc7IH0gfVxuQG1lZGlhIChtYXgtd2lkdGg6IDExOTlweCkgeyAuc3NCdG5BbWF6b24geyB3aWR0aDogMjBweDsgaGVpZ2h0OiAyMHB4OyB9IH1cblxuXG4uc3NCdG5NYXgge1xuXG4gICAgd2lkdGg6IDI0cHg7XG4gICAgaGVpZ2h0OiAyNHB4O1xuXHRtYXJnaW46IDRweDtcblx0cGFkZGluZzoxMnB4O1xuXHRib3gtc2l6aW5nOiBjb250ZW50LWJveDtcblxuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvcGFjaXR5OiAwLjc7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcblxuXHQmOmhvdmVyIHtcblx0XHRvcGFjaXR5OiAxO1xuXHRcdHRyYW5zZm9ybTogc2NhbGUoMS4yKTtcblx0fVxuXG5cdHN2ZyB7XG5cdFx0d2lkdGg6IDI0cHg7XG5cdFx0aGVpZ2h0OiAyNHB4O1xuXHR9XG59XG5cbi5zc0J0bkRpc25leSB7XG5cdC8vd2lkdGg6IDI2cHg7XG4gICAgLy9tYXJnaW4tcmlnaHQ6IDEzcHg7XG4gICAgb3BhY2l0eTogLjc7XG5cblx0Jjpob3ZlciB7XG5cdFx0b3BhY2l0eTogMTtcblx0fVxuXG5cdHN2ZyB7XG5cdFx0d2lkdGg6IDI1cHggIWltcG9ydGFudDtcblx0XHRoZWlnaHQ6IDMxcHggIWltcG9ydGFudDtcblx0XHRwYWRkaW5nLXRvcDogNHB4O1xuXHRcdG1hcmdpbi1yaWdodDogN3B4O1xuXHR9XG59XG5cbi5zc0J0bkFwcGxlIHtcblx0Ly93aWR0aDogMjZweDtcbiAgICAvL21hcmdpbi1yaWdodDogMTNweDtcblxuXHRjdXJzb3I6IHBvaW50ZXI7XG5cblxuICAgIG9wYWNpdHk6IC43O1xuXG5cdCY6aG92ZXIge1xuXHRcdG9wYWNpdHk6IDE7XG5cdH1cblxuXHRzdmcge1xuXHRcdHdpZHRoOiAyMnB4ICFpbXBvcnRhbnQ7XG5cdFx0aGVpZ2h0OiAyMnB4ICFpbXBvcnRhbnQ7XG5cdFx0bWFyZ2luLXJpZ2h0OiAycHggIWltcG9ydGFudDtcblx0fVxufSIsImJvZHkgLnZzTm90aWZpY2F0aW9uIHtcblxuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgaGVpZ2h0OiA0cmVtO1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHotaW5kZXg6IDEwMDAwMDAwMDA7XG4gICAgdG9wOi00cmVtO1xuXG4gICAgcGFkZGluZzogLjc1cmVtIDEuMjVlbTtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB0cmFuc3BhcmVudDtcbiAgICBib3JkZXItcmFkaXVzOiAuMjVlbTtcbiAgICBmb250LXNpemU6IDEycHg7XG4gICAgaGVpZ2h0OiBmaXQtY29udGVudDtcbiAgICBqdXN0aWZ5LXNlbGY6IGNlbnRlcjtcbiAgICB3aWR0aDogYXV0bztcblxuICAgIGFuaW1hdGlvbi1uYW1lOiBub3RpZmljYXRpb247XG4gICAgYW5pbWF0aW9uLWl0ZXJhdGlvbi1jb3VudDogMTtcbiAgICBhbmltYXRpb24tZHVyYXRpb246IDJzO1xuXG4gICAgQGtleWZyYW1lcyBub3RpZmljYXRpb24ge1xuICAgICAgICAwJSB7dG9wOiAtNHJlbTt9XG4gICAgICAgIDI1JSB7dG9wOiAzcmVtO31cbiAgICAgICAgODUlIHt0b3A6IDNyZW07fVxuICAgICAgICAxMDAlIHt0b3A6IC00cmVtO31cbiAgICB9XG5cbiAgICAmLnBlcnNpc3Qge1xuICAgICAgICAvL2Rvbid0IHJlc2V0IGFuaW1hdGlvbiBvciBnbyBiYWNrIHRvIGJlZ2lubmluZ1xuXG4gICAgICAgIHRvcDogM3JlbTtcblxuICAgICAgICBhbmltYXRpb24tbmFtZTogbm90aWZpY2F0aW9uLXBlcnNpc3Q7XG4gICAgICAgIGFuaW1hdGlvbi1pdGVyYXRpb24tY291bnQ6IDE7XG4gICAgICAgIGFuaW1hdGlvbi1kdXJhdGlvbjogMXM7XG5cbiAgICAgICAgQGtleWZyYW1lcyBub3RpZmljYXRpb24tcGVyc2lzdCB7XG4gICAgICAgICAgICAwJSB7dG9wOiAtNHJlbTt9XG4gICAgICAgICAgICAxMDAlIHt0b3A6IDNyZW07fVxuICAgICAgICB9XG4gICAgfVxuXG5cbiAgICAmLnN1Y2Nlc3Mge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZDRlZGRhO1xuICAgICAgICBib3JkZXItY29sb3I6ICNjM2U2Y2I7XG4gICAgICAgIGNvbG9yOiAjMTU1NzI0O1xuICAgIH1cblxuICAgICYuZmFpbCB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNlZGQ0ZDQ7XG4gICAgICAgIGJvcmRlci1jb2xvcjogI2U2YzNjMztcbiAgICAgICAgY29sb3I6ICNiNjI0MjQ7XG4gICAgfVxuXG4gICAgLnZzTm90aWZpY2F0aW9uQ2xvc2Uge1xuICAgICAgICBjb2xvcjogI2I2MjQyNDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDA7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgbGVmdDogLjVyZW07XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG5cbiAgICAudnNOQ29udGVudCB7XG4gICAgICAgIC8vY29udGVudDogJ1NjcmVlbnNob3QgY29waWVkIHRvIGNsaXBib2FyZCEnO1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHotaW5kZXg6IDEwMDAwMDAwMDA7XG4gICAgICAgIG1hcmdpbi1ib3R0b206IDFlbTtcbiAgICAgICAgcGFkZGluZzogLjc1cmVtIDEuMjVlbTtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdHJhbnNwYXJlbnQ7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IC4yNWVtO1xuICAgICAgICBmb250LXNpemU6IDEycHg7XG4gICAgICAgIGhlaWdodDogZml0LWNvbnRlbnQ7XG4gICAgICAgIHRvcDowO1xuICAgIH1cblxuICAgIGEge1xuICAgICAgICBjb2xvcjojYjYyNDI0O1xuICAgIH1cblxufSIsIi5zc01vZGFsIHtcblxuICAgIGRpc3BsYXk6IG5vbmU7XG5cbiAgICAmLnZpc2libGUge1xuICAgICAgICBkaXNwbGF5OmJsb2NrO1xuICAgIH1cblxuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB6LWluZGV4OiAxMDAwMDAwMDA7XG5cbiAgICByaWdodDoyMHB4O1xuICAgIFxuICAgIG9wYWNpdHk6IDA7XG5cbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiNmZmZlZmE7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuXG4gICAgcGFkZGluZzogMjVweDtcblxuICAgIGNvbG9yOiAjNTI1MjUyO1xuICAgIGZvbnQtZmFtaWx5OiBtdWxpLCBzYW5zLXNlcmlmO1xuXG4gICAgYm94LXNoYWRvdzogMHB4IDRweCA4cHggMHB4IHJnYmEoMCwgMCwgMCwgMC4xNSk7XG5cbiAgICBhbmltYXRpb24tbmFtZTogYW5pbWF0ZU9uO1xuICAgIGFuaW1hdGlvbi1kdXJhdGlvbjogLjJzO1xuICAgIGFuaW1hdGlvbi1maWxsLW1vZGU6IGZvcndhcmRzO1xuICAgIFxuICAgICoge1xuICAgICAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgICAgICBsaW5lLWhlaWdodDogbm9ybWFsO1xuICAgICAgICBmb250LXdlaWdodDogbm9ybWFsO1xuICAgIH1cblxuICAgIEBrZXlmcmFtZXMgYW5pbWF0ZU9uIHtcbiAgICAgICAgZnJvbSB7XG4gICAgICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICAgICAgdG9wOiAwcHg7XG4gICAgICAgIH1cbiAgICAgICAgdG8ge1xuICAgICAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgICAgIHRvcDogMjBweDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5jbG9zZSB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgcmlnaHQ6IDEwcHg7XG4gICAgICAgIHRvcDogMTBweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBvcGFjaXR5OiAuNTtcblxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoJy4uL2ltYWdlcy9jbG9zZS5zdmcnKTtcblxuICAgICAgICB3aWR0aDoxMHB4O1xuICAgICAgICBoZWlnaHQ6MTBweDtcblxuICAgIH1cblxuICAgIC5zc0J1dHRvbnMge1xuXG4gICAgICAgIG1hcmdpbi10b3A6IDI1cHg7XG4gICAgICAgIHRleHQtYWxpZ246IHJpZ2h0O1xuXG4gICAgICAgIC5zc0J1dHRvbiwgYSAuc3NCdXR0b24ge1xuICAgICAgICAgICAgZGlzcGxheTppbmxpbmUtYmxvY2s7XG5cbiAgICAgICAgICAgIGhlaWdodDoyMHB4O1xuICAgICAgICAgICAgXG4gICAgICAgICAgICBwYWRkaW5nOjNweCAxMnB4IDNweDtcbiAgICAgICAgICAgIG1hcmdpbi1sZWZ0OiAxNHB4O1xuICAgICAgICAgICAgXG4gICAgICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgICAgICBib3gtc2hhZG93OiAwcHggNHB4IDhweCAwcHggcmdiYSgwLCAwLCAwLCAwLjE1KTtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNGRkZGRkY7XG4gICAgICAgICAgICBcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMTJweDtcbiAgICAgICAgICAgIGNvbG9yOiAjNTI1MjUyO1xuICAgICAgICAgICAgbGluZS1oZWlnaHQ6IDIwcHg7XG4gICAgICAgICAgICBmb250LXdlaWdodDogbm9ybWFsO1xuICAgIFxuICAgICAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuXG4gICAgICAgICAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XG5cbiAgICAgICAgICAgIC5lbW9qaSB7XG4gICAgICAgICAgICAgICAgZm9udC1zaXplOiAxNXB4O1xuICAgICAgICAgICAgICAgIHZlcnRpY2FsLWFsaWduOiBib3R0b207XG4gICAgICAgICAgICB9XG4gICAgXG4gICAgICAgICAgICAmLmJsdWUge1xuICAgICAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICMxOWFjZWY7XG4gICAgICAgICAgICAgICAgY29sb3I6ICNGRkZGRkY7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICAuaWNvbiB7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IHVybCgnLi4vaW1hZ2VzL2ljb25CbHVlLnN2ZycpO1xuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogbm8tcmVwZWF0O1xuXG4gICAgICAgIHdpZHRoOjMwcHg7XG4gICAgICAgIGhlaWdodDozMHB4O1xuXG4gICAgICAgIHZlcnRpY2FsLWFsaWduOiB0b3A7XG4gICAgICAgIG1hcmdpbi1yaWdodDogMjJweDtcbiAgICAgICAgbWFyZ2luLXRvcDoycHg7XG5cbiAgICAgICAgZGlzcGxheTppbmxpbmUtYmxvY2s7XG4gICAgfVxuXG4gICAgLmJvZHkge1xuXG4gICAgICAgIGRpc3BsYXk6aW5saW5lLWJsb2NrO1xuICAgICAgICB3aWR0aDozMTVweDtcblxuICAgICAgICAudGl0bGUge1xuICAgICAgICAgICAgZm9udC1zaXplOiAxNXB4O1xuICAgICAgICAgICAgZm9udC13ZWlnaHQ6IDYwMDtcbiAgICAgICAgICAgIG1hcmdpbi1ib3R0b206IDdweDtcbiAgICAgICAgfVxuICAgICAgICAuZGVzY3JpcHRpb24ge1xuICAgICAgICAgICAgZm9udC1zaXplOiAxM3B4O1xuICAgICAgICAgICAgZm9udC13ZWlnaHQ6IGxpZ2h0ZXI7XG4gICAgICAgIH1cbiAgICB9XG5cbn0iLCJAdXNlIFwiU2NyZWVuc2hvdENvbnRyb2wvYnV0dG9uc1wiO1xuXG5AdXNlIFwiU2NyZWVuc2hvdENvbnRyb2wvbm90aWZpY2F0aW9uc1wiO1xuQHVzZSBcIlNjcmVlbnNob3RDb250cm9sL21vZGFsXCI7XG5cbmJvZHkge1xuXG5cdCNzc1RlbXBIb2xkZXIge1xuXHRcdHBvc2l0aW9uOmZpeGVkO1xuXHRcdHotaW5kZXg6MTAwMDAwMDAwMDAwMDtcblx0XHR3aWR0aDoxMDAlO1xuXHRcdGhlaWdodDoxMDAlO1xuXHRcdHRvcDowO1xuXHRcdHBvaW50ZXItZXZlbnRzOiBub25lO1xuXG5cdFx0dmlkZW8ge1xuXHRcdFx0d2lkdGg6YXV0byAhaW1wb3J0YW50O1xuXHRcdFx0aGVpZ2h0OmF1dG8gIWltcG9ydGFudDtcblx0XHRcdG1heC13aWR0aDoxMDAlICFpbXBvcnRhbnQ7XG5cdFx0XHRtYXgtaGVpZ2h0OiAxMDAlICFpbXBvcnRhbnQ7XG5cdFx0XHR0b3A6IDAgIWltcG9ydGFudDtcblx0XHRcdGxlZnQ6IDAgIWltcG9ydGFudDtcblx0XHRcdHRyYW5zZm9ybTogbm9uZSAhaW1wb3J0YW50O1xuXHRcdH1cblx0fVxuXG5cdCYuc3NUYWtlU2NyZWVuc2hvdCB7XG5cdFx0XG5cdFx0LnNzRWxlbWVudCB7XG5cdFx0XHR6LWluZGV4OiAxMDAwMDAwMDAwMDAgIWltcG9ydGFudDtcblx0XHR9XG5cdFx0XG5cdFx0Ji5zc05ldGZsaXgge1xuXHRcblx0XHRcdFtkYXRhLXVpYT12aWRlby1jYW52YXNdIHtcblx0XHRcdFx0ei1pbmRleDogMTAwMDAwMDA7XG5cdFx0XHR9XG5cdFx0XHRcblx0XHRcdHZpZGVvIHtcblx0XHRcdFx0YmFja2dyb3VuZC1jb2xvcjogIzAwMDAwMDtcblx0XHRcdFx0Ly9oZWlnaHQ6IGF1dG8gIWltcG9ydGFudDtcblx0XHRcdH1cblxuXHRcdFx0LnBsYXllci10aW1lZHRleHQge1xuXG5cdFx0XHRcdGRpc3BsYXk6bm9uZSAhaW1wb3J0YW50O1xuXHRcdFx0fVx0XHRcdFxuXG5cdFx0XHQmLnNob3dTdWJzIHtcblx0XHRcdFx0XG5cdFx0XHRcdC5wbGF5ZXItdGltZWR0ZXh0IHtcblxuXHRcdFx0XHRcdGRpc3BsYXk6IGJsb2NrICFpbXBvcnRhbnQ7XG5cdFx0XHRcdFx0Ly9ib3R0b206IDEwJSAhaW1wb3J0YW50O1xuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0FtYXpvbiB7XG5cblx0XHRcdC5kdi1wbGF5ZXItZnVsbHNjcmVlbiB2aWRlbyB7XG5cdFx0XHRcdHotaW5kZXg6IDk5OTk5OTk5ICFpbXBvcnRhbnQ7XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0Rpc25leSB7XG5cblx0XHRcdC5idG0tbWVkaWEtb3ZlcmxheXMtY29udGFpbmVyIHtcblx0XHRcdFx0ZGlzcGxheTpub25lO1xuXHRcdFx0fVxuXG5cdFx0XHQuVGltZWRUZXh0T3ZlcmxheSB7XG5cdFx0XHRcdGRpc3BsYXk6IG5vbmU7XG5cdFx0XHR9XG5cblx0XHRcdCYuc2hvd1N1YnMge1xuXHRcdFx0XHRcblx0XHRcdFx0LlRpbWVkVGV4dE92ZXJsYXkge1xuXHRcdFx0XHRcdGRpc3BsYXk6IGJsb2NrO1xuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0h1bHUge1xuXHRcdFx0LkNvbnRlbnRQbGF5ZXJfX2NvbnRlbnRBcmVhIHtcblx0XHRcdFx0ei1pbmRleDogMTAwMDAwMDAwMDA7XG4gICAgXHRcdFx0cG9zaXRpb246IHJlbGF0aXZlO1xuXHRcdFx0fVxuXG5cdFx0XHQuQ2xvc2VkQ2FwdGlvbiB7XG5cdFx0XHRcdGRpc3BsYXk6bm9uZTtcblx0XHRcdH1cblxuXHRcdFx0Ji5zaG93U3VicyB7XG5cdFx0XHRcdC5DbG9zZWRDYXB0aW9uIHtcblx0XHRcdFx0XHRkaXNwbGF5OmJsb2NrO1xuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc01heCB7XG5cblx0XHRcdHZpZGVvIHtcblx0XHRcdFx0ei1pbmRleDogOTk5OTk5OTk7XG5cdFx0XHRcdHBvc2l0aW9uOiByZWxhdGl2ZTtcblx0XHRcdH1cblxuXHRcdFx0Lypcblx0XHRcdC8vZG9uJ3Qga25vdyB3aGF0IHRoaXMgaXMgZm9yXG5cdFx0XHQqOmhhcyh2aWRlbykge1xuXHRcdFx0XHR6LWluZGV4OiA5OTk5OTk5OTtcblx0XHRcdFx0cG9zaXRpb246IHJlbGF0aXZlO1xuXHRcdFx0fSovXG5cblx0XHR9XG5cblx0XHQmLnNzWW91dHViZSB7XG5cblx0XHRcdC5odG1sNS12aWRlby1jb250YWluZXIsIC55dHAtY2FwdGlvbi13aW5kb3ctY29udGFpbmVyIHtcblx0XHRcdFx0ei1pbmRleDogOTk5OTk5OTk5ICFpbXBvcnRhbnQ7XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0Ji5zc0FwcGxlIHtcblx0XHRcdCNhcHBsZS1tdXNpYy12aWRlby1wbGF5ZXIge1xuXHRcdFx0XHR6LWluZGV4OiA5OTk5OTk5OTkgIWltcG9ydGFudDtcblx0XHRcdH1cblxuXHRcdFx0LnZpZGVvLXBsYXllci1zY3JpbSB7XG5cdFx0XHRcdGRpc3BsYXk6bm9uZTtcblx0XHRcdH1cblx0XHR9XG5cdH1cblxuXHQuc3NXcmFwcGVyIHtcblx0XHRvdmVyZmxvdzogaGlkZGVuO1xuXHR9XG5cblxufSJdLCJzb3VyY2VSb290IjoiIn0= */</style></head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="http://10.133.2.200/ai/index.html"> UP </a>
+ |
+ <a accesskey="H" href="http://10.133.2.200/ai/index.html"> HOME </a>
+</div><div id="content" class="content">
+<h1 class="title">pytorch 入門</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>目次</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#org7994b2e">1. python基本文法の確認</a></li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#org1a7b52f">2. FashionMNISTの学習</a></li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#orgba7b0b3">3. xor関数の学習</a></li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#org0acb537">4. 演習</a>
+<ul>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#orgf56c43e">FashionMNISTのニューラルネットワークの精度を上げてみよう</a></li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#orgd899306">XORのニューラルネットワークの精度を上げてみよう</a></li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#org9b732a1">XORのニューラルネットワークを元にANDを学習するニューラルネットワークを作成してみよう</a></li>
+</ul>
+</li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#org8061b5b">5. 課題</a></li>
+<li><a href="http://10.133.2.200/ai/pytorchintro.html#org9e9985c">6. 発展課題</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7994b2e" class="outline-2">
+<h2 id="org7994b2e"><span class="section-number-2">1.</span> python基本文法の確認</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr">1: </span>print(list(range(4)))
+<span class="linenr">2: </span>&gt;[0, 1, 2, 3]
+</pre>
+</div>
+
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr">1: </span>import numpy as np
+<span class="linenr">2: </span>a=np.array([[1,2,3],[4,5,6]])
+<span class="linenr">3: </span>print(a.shape)
+<span class="linenr">4: </span>&gt;(2,3)
+<span class="linenr">5: </span>print(a[1,0])
+<span class="linenr">6: </span>&gt;4
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org1a7b52f" class="outline-2">
+<h2 id="org1a7b52f"><span class="section-number-2">2.</span> FashionMNISTの学習</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="https://colab.research.google.com/github/YutaroOgawa/pytorch_tutorials_jp/blob/main/notebook/0_Learn%20the%20Basics/0_8_quickstart_tutorial_jp.ipynb">PyTorch入門 8. クイックスタート</a>
+の例を途中の変数の状態を確認しながらgoogle colabなどのpythonが実行可能な環境で実行してみよう
+</p>
+
+<p>
+<a href="http://10.133.2.200/ai/dyn/examples/fashionmnisit1.py">dyn/examples/fashionmnisit1.py</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr">  1: </span>
+<span class="linenr">  2: </span>import torch
+<span class="linenr">  3: </span>from torch import nn
+<span class="linenr">  4: </span>from torch.utils.data import DataLoader
+<span class="linenr">  5: </span>from torchvision import datasets
+<span class="linenr">  6: </span>from torchvision.transforms import ToTensor, Lambda, Compose
+<span class="linenr">  7: </span>import matplotlib.pyplot as plt
+<span class="linenr">  8: </span>
+<span class="linenr">  9: </span>
+<span class="linenr"> 10: </span># 訓練データをdatasetsからダウンロードa
+<span class="linenr"> 11: </span>training_data = datasets.FashionMNIST(
+<span class="linenr"> 12: </span>      root="data",
+<span class="linenr"> 13: </span>      train=True,
+<span class="linenr"> 14: </span>      download=True,
+<span class="linenr"> 15: </span>      transform=ToTensor(),
+<span class="linenr"> 16: </span>  )
+<span class="linenr"> 17: </span>
+<span class="linenr"> 18: </span># テストデータをdatasetsからダウンロード
+<span class="linenr"> 19: </span>test_data = datasets.FashionMNIST(
+<span class="linenr"> 20: </span>      root="data",
+<span class="linenr"> 21: </span>      train=False,
+<span class="linenr"> 22: </span>      download=True,
+<span class="linenr"> 23: </span>      transform=ToTensor(),
+<span class="linenr"> 24: </span>  )
+<span class="linenr"> 25: </span>
+<span class="linenr"> 26: </span>
+<span class="linenr"> 27: </span>### データの中身を確認してみよう
+<span class="linenr"> 28: </span>
+<span class="linenr"> 29: </span>#print(len(training_data))
+<span class="linenr"> 30: </span>#print(len(test_data))
+<span class="linenr"> 31: </span>#print(training_data[0][0].shape)
+<span class="linenr"> 32: </span>
+<span class="linenr"> 33: </span>#training_data[0][0][0][14][14]
+<span class="linenr"> 34: </span>#test_data[10]
+<span class="linenr"> 35: </span>#test_data[0][1]
+<span class="linenr"> 36: </span>
+<span class="linenr"> 37: </span>#plt.imshow(training_data[30000][0][0],cmap="gray")
+<span class="linenr"> 38: </span>#print(training_data[30000][1])
+<span class="linenr"> 39: </span>
+<span class="linenr"> 40: </span>
+<span class="linenr"> 41: </span>
+<span class="linenr"> 42: </span>
+<span class="linenr"> 43: </span>
+<span class="linenr"> 44: </span>
+<span class="linenr"> 45: </span>batch_size = 64
+<span class="linenr"> 46: </span>
+<span class="linenr"> 47: </span># データローダーの作成
+<span class="linenr"> 48: </span>train_dataloader = DataLoader(training_data, batch_size=batch_size)
+<span class="linenr"> 49: </span>test_dataloader = DataLoader(test_data, batch_size=batch_size)
+<span class="linenr"> 50: </span>
+<span class="linenr"> 51: </span>for X, y in test_dataloader:
+<span class="linenr"> 52: </span>    print("Shape of X [N, C, H, W]: ", X.shape)
+<span class="linenr"> 53: </span>    print("Shape of y: ", y.shape, y.dtype)
+<span class="linenr"> 54: </span>
+<span class="linenr"> 55: </span>    #最初の１つのデータだけ表示してデータローダーの動作を確認してみる
+<span class="linenr"> 56: </span>    break
+<span class="linenr"> 57: </span>
+<span class="linenr"> 58: </span>
+<span class="linenr"> 59: </span>
+<span class="linenr"> 60: </span>## google colab の無料プランではcpuしか使えない
+<span class="linenr"> 61: </span>device = "cuda" if torch.cuda.is_available() else "cpu"
+<span class="linenr"> 62: </span>print("Using {} device".format(device))
+<span class="linenr"> 63: </span>
+<span class="linenr"> 64: </span>
+<span class="linenr"> 65: </span># modelを定義します
+<span class="linenr"> 66: </span>class NeuralNetwork(nn.Module):
+<span class="linenr"> 67: </span>    def __init__(self):
+<span class="linenr"> 68: </span>        super(NeuralNetwork, self).__init__()
+<span class="linenr"> 69: </span>        self.flatten = nn.Flatten()
+<span class="linenr"> 70: </span>        self.linear_relu_stack = nn.Sequential(
+<span class="linenr"> 71: </span>            nn.Linear(28*28, 512),
+<span class="linenr"> 72: </span>            nn.ReLU(),
+<span class="linenr"> 73: </span>            #nn.Linear(512, 512),  #ここをコメントアウトしない場合に精度は上がる？
+<span class="linenr"> 74: </span>            #nn.ReLU(),           
+<span class="linenr"> 75: </span>            nn.Linear(512, 10),
+<span class="linenr"> 76: </span>            nn.ReLU()
+<span class="linenr"> 77: </span>        )
+<span class="linenr"> 78: </span>
+<span class="linenr"> 79: </span>    def forward(self, x):
+<span class="linenr"> 80: </span>        x = self.flatten(x)
+<span class="linenr"> 81: </span>        logits = self.linear_relu_stack(x)
+<span class="linenr"> 82: </span>        return logits
+<span class="linenr"> 83: </span>
+<span class="linenr"> 84: </span>
+<span class="linenr"> 85: </span>model = NeuralNetwork().to(device)
+<span class="linenr"> 86: </span>#model = NeuralNetwork()
+<span class="linenr"> 87: </span>
+<span class="linenr"> 88: </span>## どんなニューラルネットワークか確認してみよう
+<span class="linenr"> 89: </span>#print(model)
+<span class="linenr"> 90: </span>
+<span class="linenr"> 91: </span># 初期状態ではニューラルネットワークのパラメータは乱数だが、適当な画像を入力してみよう
+<span class="linenr"> 92: </span>
+<span class="linenr"> 93: </span>#乱数の3x4行列を生成してみる例
+<span class="linenr"> 94: </span>torch.rand((3,4))
+<span class="linenr"> 95: </span>
+<span class="linenr"> 96: </span># 乱数の1x28x28行列をニューラルネットワークに入力してみてどんな出力になるか確認してみよう
+<span class="linenr"> 97: </span>print(model(torch.rand((1,28,28)).to(device)))
+<span class="linenr"> 98: </span># こんな感じの１０次元ベクトルになる
+<span class="linenr"> 99: </span>##tensor([[0.0000, 0.0371, 0.0000, 0.0000, 0.0000, 0.0914, 0.0466, 0.0678, 0.0229,0.1512]], grad_fn=&lt;ReluBackward0&gt;)
+<span class="linenr">100: </span>
+<span class="linenr">101: </span>
+<span class="linenr">102: </span>loss_fn = nn.CrossEntropyLoss() #どんな誤差を小さくしたいか定義する
+<span class="linenr">103: </span>optimizer = torch.optim.SGD(model.parameters(), lr=1e-3) #どんな勾配法を実行するか選択する
+<span class="linenr">104: </span>
+<span class="linenr">105: </span>def train(dataloader, model, loss_fn, optimizer):
+<span class="linenr">106: </span>    size = len(dataloader.dataset)
+<span class="linenr">107: </span>    for batch, (X, y) in enumerate(dataloader):
+<span class="linenr">108: </span>        X, y = X.to(device), y.to(device)
+<span class="linenr">109: </span>
+<span class="linenr">110: </span>        # 損失誤差を計算
+<span class="linenr">111: </span>        pred = model(X)
+<span class="linenr">112: </span>        loss = loss_fn(pred, y)
+<span class="linenr">113: </span>
+<span class="linenr">114: </span>        # バックプロパゲーション
+<span class="linenr">115: </span>        optimizer.zero_grad()
+<span class="linenr">116: </span>        loss.backward()
+<span class="linenr">117: </span>        optimizer.step()  #勾配法を実行
+<span class="linenr">118: </span>
+<span class="linenr">119: </span>        if batch % 100 == 0:  	# 100回に一回のデバックプリント
+<span class="linenr">120: </span>            loss, current = loss.item(), batch * len(X)
+<span class="linenr">121: </span>            print(f"loss: {loss:&gt;7f}  [{current:&gt;5d}/{size:&gt;5d}]")
+<span class="linenr">122: </span>
+<span class="linenr">123: </span>def test(dataloader, model):
+<span class="linenr">124: </span>    size = len(dataloader.dataset)
+<span class="linenr">125: </span>    model.eval()
+<span class="linenr">126: </span>    test_loss, correct = 0, 0
+<span class="linenr">127: </span>    with torch.no_grad():
+<span class="linenr">128: </span>        for X, y in dataloader:
+<span class="linenr">129: </span>            X, y = X.to(device), y.to(device)
+<span class="linenr">130: </span>            pred = model(X)
+<span class="linenr">131: </span>            test_loss += loss_fn(pred, y).item()
+<span class="linenr">132: </span>            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+<span class="linenr">133: </span>    test_loss /= size
+<span class="linenr">134: </span>    correct /= size
+<span class="linenr">135: </span>    print(f"Test Error: \n Accuracy: {(100*correct):&gt;0.1f}%, Avg loss: {test_loss:&gt;8f} \n")
+<span class="linenr">136: </span>
+<span class="linenr">137: </span>
+<span class="linenr">138: </span>#epochs = 1
+<span class="linenr">139: </span>epochs = 10
+<span class="linenr">140: </span>for t in range(epochs):
+<span class="linenr">141: </span>    print(f"Epoch {t+1}\n-------------------------------")
+<span class="linenr">142: </span>    train(train_dataloader, model, loss_fn, optimizer)
+<span class="linenr">143: </span>    test(test_dataloader, model)
+<span class="linenr">144: </span>print("Done!")
+<span class="linenr">145: </span>
+<span class="linenr">146: </span>
+<span class="linenr">147: </span>#x=model(torch.tensor(training_data[30000][0]))
+<span class="linenr">148: </span>#print(x)
+<span class="linenr">149: </span>
+<span class="linenr">150: </span>x=model(torch.tensor(training_data[30000][0]).to(device))
+<span class="linenr">151: </span>print(x)
+<span class="linenr">152: </span>#tensor([[0.5800, 0.0000, 0.0000, 3.5463, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,0.0000]], device='cuda:0', grad_fn=&lt;ReluBackward0&gt;)
+<span class="linenr">153: </span>## 3番目の値が大きいので３番目の　Dress 	ドレス　と判定されている
+<span class="linenr">154: </span>
+<span class="linenr">155: </span>#y=x.to('cpu').detach().numpy().copy() 
+<span class="linenr">156: </span>#print(y)
+<span class="linenr">157: </span>plt.imshow(training_data[30000][0][0],cmap="gray")
+<span class="linenr">158: </span>plt.show()
+<span class="linenr">159: </span>
+</pre>
+</div>
+
+
+<p>
+<a href="https://colab.research.google.com/github/YutaroOgawa/pytorch_tutorials_jp/blob/main/notebook/0_Learn%20the%20Basics/0_1_tensors_tutorial_js.ipynb">pytorchにおける行列などの扱い方の解説</a>
+</p>
+
+
+<p>
+<a href="https://colab.research.google.com/github/YutaroOgawa/pytorch_tutorials_jp/blob/main/notebook/0_Learn%20the%20Basics/0_2_data_tutorial_jp.ipynb">データセットとデータローダーの詳細な解説</a>
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgba7b0b3" class="outline-2">
+<h2 id="orgba7b0b3"><span class="section-number-2">3.</span> xor関数の学習</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+xor関数を学習する
+以下のコードをgoogle colabなどで実行してみよう
+</p>
+
+<p>
+<a href="http://10.133.2.200/ai/dyn/examples/xor-torch.py">dyn/examples/xor-torch.py</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr"> 1: </span>
+<span class="linenr"> 2: </span>import torch
+<span class="linenr"> 3: </span>import torch.nn as nn
+<span class="linenr"> 4: </span>import torch.optim as optim
+<span class="linenr"> 5: </span>
+<span class="linenr"> 6: </span>class Net(nn.Module):
+<span class="linenr"> 7: </span>    def __init__(self):
+<span class="linenr"> 8: </span>        super(Net, self).__init__()
+<span class="linenr"> 9: </span>        self.fc1 = torch.nn.Linear(2, 16) #この数値を16から4にしたら精度は上がる？
+<span class="linenr">10: </span>        self.fc2 = torch.nn.Linear(16, 1)
+<span class="linenr">11: </span>        self.sigmoid = nn.Sigmoid()
+<span class="linenr">12: </span>
+<span class="linenr">13: </span>    def forward(self, x):
+<span class="linenr">14: </span>        x = torch.nn.functional.relu(self.fc1(x))
+<span class="linenr">15: </span>        x = self.fc2(x)
+<span class="linenr">16: </span>        x = self.sigmoid(x)
+<span class="linenr">17: </span>        return x
+<span class="linenr">18: </span>
+<span class="linenr">19: </span>def main():
+<span class="linenr">20: </span>
+<span class="linenr">21: </span>    import numpy as np
+<span class="linenr">22: </span>    x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+<span class="linenr">23: </span>    y = np.array([[0], [1], [1], [0]])
+<span class="linenr">24: </span>
+<span class="linenr">25: </span>    num_epochs = 10000
+<span class="linenr">26: </span>
+<span class="linenr">27: </span>    # convert numpy array to tensor
+<span class="linenr">28: </span>    x_tensor = torch.from_numpy(x).float()
+<span class="linenr">29: </span>    y_tensor = torch.from_numpy(y).float()
+<span class="linenr">30: </span>
+<span class="linenr">31: </span>    # crate instance
+<span class="linenr">32: </span>    net = Net()
+<span class="linenr">33: </span>
+<span class="linenr">34: </span>    # set training mode
+<span class="linenr">35: </span>    net.train()
+<span class="linenr">36: </span>
+<span class="linenr">37: </span>    # set training parameters
+<span class="linenr">38: </span>    optimizer = torch.optim.SGD(net.parameters(), lr=0.01)
+<span class="linenr">39: </span>    criterion = torch.nn.MSELoss()
+<span class="linenr">40: </span>
+<span class="linenr">41: </span>    # start to train
+<span class="linenr">42: </span>    epoch_loss = []
+<span class="linenr">43: </span>    for epoch in range(num_epochs):
+<span class="linenr">44: </span>        # forward
+<span class="linenr">45: </span>        outputs = net(x_tensor)
+<span class="linenr">46: </span>
+<span class="linenr">47: </span>        # calculate loss
+<span class="linenr">48: </span>        loss = criterion(outputs, y_tensor)
+<span class="linenr">49: </span>
+<span class="linenr">50: </span>        # update weights
+<span class="linenr">51: </span>        optimizer.zero_grad()
+<span class="linenr">52: </span>        loss.backward()
+<span class="linenr">53: </span>        optimizer.step()
+<span class="linenr">54: </span>
+<span class="linenr">55: </span>        # save loss of this epoch
+<span class="linenr">56: </span>        epoch_loss.append(loss.data.numpy().tolist())
+<span class="linenr">57: </span>
+<span class="linenr">58: </span>    print(net(torch.from_numpy(np.array([[0, 0]])).float()))  #tensor([[0.1525]], grad_fn=&lt;SigmoidBackward0&gt;)
+<span class="linenr">59: </span>    print(net(torch.from_numpy(np.array([[1, 0]])).float()))  #tensor([[0.7982]], grad_fn=&lt;SigmoidBackward0&gt;)
+<span class="linenr">60: </span>    print(net(torch.from_numpy(np.array([[0, 1]])).float()))  #tensor([[0.6603]], grad_fn=&lt;SigmoidBackward0&gt;)
+<span class="linenr">61: </span>    print(net(torch.from_numpy(np.array([[1, 1]])).float()))  #tensor([[0.3350]], grad_fn=&lt;SigmoidBackward0&gt;)
+<span class="linenr">62: </span>
+<span class="linenr">63: </span>if __name__ == "__main__":
+<span class="linenr">64: </span>    main()
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org0acb537" class="outline-2">
+<h2 id="org0acb537"><span class="section-number-2">4.</span> 演習</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgf56c43e" class="outline-3">
+<h3 id="orgf56c43e">FashionMNISTのニューラルネットワークの精度を上げてみよう</h3>
+</div>
+
+<div id="outline-container-orgd899306" class="outline-3">
+<h3 id="orgd899306">XORのニューラルネットワークの精度を上げてみよう</h3>
+</div>
+
+<div id="outline-container-org9b732a1" class="outline-3">
+<h3 id="org9b732a1">XORのニューラルネットワークを元にANDを学習するニューラルネットワークを作成してみよう</h3>
+</div>
+</div>
+
+
+
+<div id="outline-container-org8061b5b" class="outline-2">
+<h2 id="org8061b5b"><span class="section-number-2">5.</span> 課題</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+以下はyahoo financeからナスダック100の株価の終値(ニューヨーク市場が閉まる日本時間でAM５：００の株価)の過去１００日分を取得するプログラムである。
+取得した日の翌日の株価の終値を予測するプログラムを作成せよ
+</p>
+
+<p>
+<a href="http://10.133.2.200/ai/dyn/examples/yfinance-usage.py">dyn/examples/yfinance-usage.py</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr"> 1: </span>
+<span class="linenr"> 2: </span>!pip install yfinance 
+<span class="linenr"> 3: </span>
+<span class="linenr"> 4: </span>import yfinance as yf
+<span class="linenr"> 5: </span>
+<span class="linenr"> 6: </span>ticked = yf.Ticker("^NDX")
+<span class="linenr"> 7: </span>hist = ticked.history(period="100d",interval="1d")
+<span class="linenr"> 8: </span>
+<span class="linenr"> 9: </span>#print(hist) #ここをコメントアウトするとデータの詳細が見れる
+<span class="linenr">10: </span>
+<span class="linenr">11: </span>closes=hist['Close'].values #詳細データから必要なデータをlistで取り出した
+<span class="linenr">12: </span>
+<span class="linenr">13: </span>#print(closes)  #どんなデータか確認してみよう
+<span class="linenr">14: </span>
+</pre>
+</div>
+
+<p>
+ヒントのコード１
+</p>
+
+<p>
+今日の値段を予測するために３日前の値段p1,p2,p3を入力するなら
+以下のような配列を用意すれば良い
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr"> 1: </span>ccc=closes
+<span class="linenr"> 2: </span>print(ccc)
+<span class="linenr"> 3: </span>X=[]
+<span class="linenr"> 4: </span>p1=ccc[0]
+<span class="linenr"> 5: </span>p2=ccc[1]
+<span class="linenr"> 6: </span>p3=ccc[2]
+<span class="linenr"> 7: </span>for p in ccc[3:]:
+<span class="linenr"> 8: </span>  X.append([p1,p2,p3])
+<span class="linenr"> 9: </span>  p1=p2
+<span class="linenr">10: </span>  p2=p3
+<span class="linenr">11: </span>  p3=p
+<span class="linenr">12: </span>print(X) #入力
+<span class="linenr">13: </span>y=ccc[4:]
+<span class="linenr">14: </span>print(y) #出力?
+</pre>
+</div>
+
+
+
+<p>
+ヒントのコード２
+</p>
+
+<p>
+画像を入力するニューラルネットワークを、３日分の値段を入力するように変える
+出力は１０個のクラスではなく、値段１つだけに変えれば良い
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="linenr"> 1: </span>class NeuralNetwork(nn.Module):
+<span class="linenr"> 2: </span>    def __init__(self):
+<span class="linenr"> 3: </span>        super(NeuralNetwork, self).__init__()
+<span class="linenr"> 4: </span>        self.linear_relu_stack = nn.Sequential(
+<span class="linenr"> 5: </span>            nn.Linear(3, 10),　#３日
+<span class="linenr"> 6: </span>            nn.ReLU(),
+<span class="linenr"> 7: </span>            nn.Linear(10, 10),
+<span class="linenr"> 8: </span>            nn.ReLU(),
+<span class="linenr"> 9: </span>            nn.Linear(10, 1),　#１日
+<span class="linenr">10: </span>            nn.ReLU()
+<span class="linenr">11: </span>        )
+<span class="linenr">12: </span>    def forward(self, x):
+<span class="linenr">13: </span>        ret = self.linear_relu_stack(x)
+<span class="linenr">14: </span>        return ret
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org9e9985c" class="outline-2">
+<h2 id="org9e9985c"><span class="section-number-2">6.</span> 発展課題</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>optimizerについて調べよ。例えば <a href="https://rightcode.co.jp/blogs/17100">これ</a>  などはわかりやすい。 optimizerの種類やlr=1e-3という部分を変えるとどうなるか調べよ。</li>
+<li>時系列データ処理でウォークフォワード法が必要になる理由について調べよ</li>
+<li>ウォークフォワード法を使った場合の株価予測プログラムを作成せよ</li>
+<li>Close以外の値や、^NDX以外の値(USDJPY=Xなど)を入力にして複数入力のある株価予測プログラムを作成せよ</li>
+<li>誤差逆伝搬法の式を導出せよ（参考 <a href="https://qiita.com/43x2/items/50b55623c890564f1893">https://qiita.com/43x2/items/50b55623c890564f1893</a> )</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">著者: Hirotaka Niitsuma</p>
+<p class="email">Email: <a href="mailto:hirotakaniitsuma@omu.ac.jp">hirotakaniitsuma@omu.ac.jp</a></p>
+<p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.1 (<a href="https://orgmode.org/">Org</a> mode 9.6.6)</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+
+</body></html>
